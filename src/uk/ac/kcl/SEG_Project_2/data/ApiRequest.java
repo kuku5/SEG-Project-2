@@ -47,7 +47,6 @@ public class ApiRequest implements WorldBankApiRequest {
 
 	// request fields
 	private List<JSONObject> result = new ArrayList<JSONObject>();
-	private Integer responseCode = -1;
 	private HttpUriRequest requestBase;
 
 	// create a new request and handler
@@ -155,6 +154,7 @@ public class ApiRequest implements WorldBankApiRequest {
 				int totalPages = 1;
 
 				// did the loop below fail at any point?
+				int responseCode = 0;
 				boolean failed = false;
 
 				// loop to get all pages
@@ -301,12 +301,6 @@ public class ApiRequest implements WorldBankApiRequest {
 	@Override
 	public List<JSONObject> getResult() {
 		return result;
-	}
-
-	// get the response status code (nb. accessible within a result handling Runnable)
-	@Override
-	public Integer getResponseCode() {
-		return responseCode;
 	}
 
 }
