@@ -1,6 +1,7 @@
 package uk.ac.kcl.SEG_Project_2.data;
 
-import java.util.HashMap;
+import org.json.JSONObject;
+
 import java.util.List;
 
 public interface WorldBankApiRequest {
@@ -9,9 +10,9 @@ public interface WorldBankApiRequest {
 	Request builders
 	 */
 
-	public void setIndicators(List<String> indicators);
+	public void setIndicator(String indicator);
 
-	public void setCountries(List<String> countries);
+	public void setCountries(String... countries);
 
 	public void setDateRange(int startMonth, int startYear, int endMonth, int endYear);
 
@@ -23,11 +24,13 @@ public interface WorldBankApiRequest {
 	Request running behaviour modifiers
 	 */
 
-	public void setOnComplete(Runnable onComplete);
+	public void setOnComplete(OnCompleteListener onComplete);
 
-	public void setOnFail(Runnable onFail);
+	public void setOnFail(OnFailListener onFail);
 
-	public void setOnCancel(Runnable onCancel);
+	public void setOnCancel(OnCancelListener onCancel);
+
+	public void setOnProgressUpdate(OnProgressUpdateListener onStatusUpdate);
 
 	/*
 	Request execution methods
@@ -43,7 +46,7 @@ public interface WorldBankApiRequest {
 
 	public Status getStatus();
 
-	public HashMap<String, Object> getResult();
+	public List<JSONObject> getResult();
 
 	public Integer getResponseCode();
 
@@ -58,10 +61,31 @@ public interface WorldBankApiRequest {
 	}
 
 	public enum Status {
-		PENDING,
-		OKAY,
+		WAITING,
+		EXECUTING,
+		COMPLETED,
 		FAILED,
 		CANCELLED
+	}
+
+	/*
+	Listener classes
+	 */
+
+	public interface OnCompleteListener {
+		public void onComplete();
+	}
+
+	public interface OnFailListener {
+		public void onFail();
+	}
+
+	public interface OnCancelListener {
+		public void onCancel();
+	}
+
+	public interface OnProgressUpdateListener {
+		public void onProgressUpdate(float progress);
 	}
 
 }
