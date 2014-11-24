@@ -7,7 +7,7 @@ public class C {
 
     /* CACHE */
     public static final int CACHE_EXPIRY = 6*60*60;
-
+	public static final String CACHE_DELIM = "###cachedelim###";
 
 	/* DEBUGGING */
 	public static final String LOG_TAG = "++ SEG2 ++";
