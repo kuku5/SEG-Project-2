@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import uk.ac.kcl.SEG_Project_2.constants.C;
+import uk.ac.kcl.SEG_Project_2.constants.Utils;
 
 import java.io.IOException;
 import java.util.*;
@@ -28,7 +29,7 @@ public class ApiRequest implements WorldBankApiRequest {
 	private int timeout = 20000;
 
 	// request structure fields
-	private String indicator = null;
+	private String indicator = "";
 	private List<String> countries = null;
 	private int startMonth = 0;
 	private int startYear = 0;
@@ -85,7 +86,23 @@ public class ApiRequest implements WorldBankApiRequest {
 		this.forceFresh = forceFresh;
 	}
 
-	// set handlers
+    @Override
+    public String createHash() {
+        // sanitise inputs for creating hash
+        String countrySegment;
+        if (countries == null || countries.size() == 0) {
+            countrySegment = "all";
+        } else {
+            String[] sorted = (String[]) countries.toArray();
+            Arrays.sort(sorted);
+            countrySegment = TextUtils.join(";", sorted);
+        }
+
+        // create hash
+        return Utils.createSHA256(indicator + countrySegment + startMonth + startYear + endMonth + endYear + frequency.toString());
+    }
+
+    // set handlers
 
 	@Override
 	public void setOnComplete(OnCompleteListener onComplete) {
