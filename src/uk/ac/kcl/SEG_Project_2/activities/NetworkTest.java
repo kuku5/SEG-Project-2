@@ -28,7 +28,7 @@ public class NetworkTest extends Activity {
 			@Override
 			public void onComplete() {
 				Log.d(C.LOG_TAG, "Done!");
-				Log.d(C.LOG_TAG, "Found " + request.getResult().length() + " records");
+				Log.d(C.LOG_TAG, "Found " + request.getResult().size() + " records");
 			}
 		});
 		request.setOnFail(new WorldBankApiRequest.OnFailListener() {
