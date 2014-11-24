@@ -147,6 +147,18 @@ public class ApiRequest implements WorldBankApiRequest {
 		status = Status.EXECUTING;
 		sendProgressUpdate(0, 0);
 
+		// check if this data is already in the cache
+		if (Cache.hasData(context, this)) {
+			List<JSONObject> data = Cache.getData(context, this);
+			if (data != null) {
+				sendProgressUpdate(1, 1);
+				result = data;
+				status = Status.COMPLETED;
+				finish();
+				return;
+			}
+		}
+
 		// build the URI
 		String countriesSegment = countries.size() > 0 ? TextUtils.join(";", countries) : "all";
 		String frequencySegment = "Y";
@@ -236,6 +248,9 @@ public class ApiRequest implements WorldBankApiRequest {
 					finish();
 					return;
 				}
+
+				// save into cache
+				Cache.saveData(context, ApiRequest.this, result);
 
 				status = Status.COMPLETED;
 				finish();
