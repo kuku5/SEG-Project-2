@@ -1,4 +1,4 @@
-package com.project.seg2;
+package uk.ac.kcl.SEG_Project_2.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import uk.ac.kcl.SEG_Project_2.R;
 
 public class MetricSelection extends Activity implements OnClickListener {
 
@@ -14,7 +15,6 @@ public class MetricSelection extends Activity implements OnClickListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.selection_metric);
 		initialise();

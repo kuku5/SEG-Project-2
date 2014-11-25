@@ -1,4 +1,4 @@
-package com.project.seg2;
+package uk.ac.kcl.SEG_Project_2.activities;
 
 import java.util.ArrayList;
 
@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import uk.ac.kcl.SEG_Project_2.R;
 
 public class Countries extends Activity implements OnClickListener {
 

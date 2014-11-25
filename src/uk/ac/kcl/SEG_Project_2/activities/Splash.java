@@ -1,8 +1,9 @@
-package com.project.seg2;
+package uk.ac.kcl.SEG_Project_2.activities;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import uk.ac.kcl.SEG_Project_2.R;
 
 public class Splash extends Activity {
 

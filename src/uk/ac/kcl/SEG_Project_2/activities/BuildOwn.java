@@ -1,4 +1,4 @@
-package com.project.seg2;
+package uk.ac.kcl.SEG_Project_2.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import uk.ac.kcl.SEG_Project_2.R;
 
 public class BuildOwn extends Activity implements OnClickListener {
 	Spinner spSelect;

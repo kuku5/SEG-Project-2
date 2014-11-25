@@ -1,4 +1,4 @@
-package com.project.seg2;
+package uk.ac.kcl.SEG_Project_2.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,10 +9,12 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import uk.ac.kcl.SEG_Project_2.R;
 
 public class WhichGas extends Activity implements OnClickListener {
+
 	Spinner spSelect;
-	String graphList[] = { "Graph type 1", "Graph type 2", "Graph type 3" };
+	String graphList[] = {"Graph type 1", "Graph type 2", "Graph type 3"};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
