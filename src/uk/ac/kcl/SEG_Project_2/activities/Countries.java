@@ -88,7 +88,7 @@ public class Countries extends Activity implements OnClickListener {
 
 		switch (v.getId()) {
 		case R.id.btProceed:
-			startActivity(new Intent("com.project.seg2.METRICSELECTION"));
+			startActivity(new Intent(getBaseContext(), MetricSelection.class));
 			break;
 		}
 

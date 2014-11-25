@@ -44,7 +44,7 @@ public class MetricSelection extends Activity implements OnClickListener {
 
 		switch (v.getId()) {
 		case R.id.btGasses:
-			startActivity(new Intent("com.project.seg2.WHICHGAS"));
+			startActivity(new Intent(getBaseContext(), WhichGas.class));
 			break;
 		case R.id.btTrees:
 			break;
@@ -53,7 +53,7 @@ public class MetricSelection extends Activity implements OnClickListener {
 		case R.id.btPopulation:
 			break;
 		case R.id.btBuild:
-			startActivity(new Intent("com.project.seg2.BUILDOWN"));
+			startActivity(new Intent(getBaseContext(), BuildOwn.class));
 			break;
 
 		}

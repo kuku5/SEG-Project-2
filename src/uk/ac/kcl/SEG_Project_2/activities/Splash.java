@@ -19,7 +19,7 @@ public class Splash extends Activity {
 					e.printStackTrace();
 				}
 
-				startActivity(new Intent("com.project.seg2.COUNTRIES"));
+				startActivity(new Intent(getBaseContext(), Countries.class));
 			}
 		};
 		timer.start();
