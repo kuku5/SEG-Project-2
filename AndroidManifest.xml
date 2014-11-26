@@ -16,12 +16,17 @@
 		android:label="@string/app_name"
 		android:allowBackup="true">
 
-		<activity android:name=".activities.NetworkTest">
+		<activity android:name=".activities.BuildOwn"/>
+		<activity android:name=".activities.Countries"/>
+		<activity android:name=".activities.MetricSelection"/>
+		<activity android:name=".activities.NetworkTest"/>
+		<activity android:name=".activities.Splash">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
+		<activity android:name=".activities.WhichGas"/>
 
 	</application>
 </manifest>

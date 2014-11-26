@@ -43,6 +43,12 @@ public interface WorldBankApiRequest {
 	 */
 	public void setForceFresh(boolean forceFresh);
 
+    /**
+     * Create a hash to represent the request
+     * @return a hash representing the request
+     */
+    public String createHash();
+
 	/*
 	Request running behaviour modifiers
 	 */

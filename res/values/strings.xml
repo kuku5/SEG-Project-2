@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">SEG Project 2</string>
+
+    <string name="app_name">SEG2</string>
+    <string name="action_settings">Settings</string>
+    <string name="countries">Countries</string>
+    <string name="which_gas">Which Gasses?</string>
+    <string name="build_own">Which Metric?</string>
+    <string name="selection_mectric">Metric Selection</string>
+
+    <string-array name="list_gas_type">
+        <item>Gas 1</item>
+        <item>Gas 2</item>
+        <item>Gas 3</item>
+    </string-array>
+    <string-array name="list_metric_type">
+        <item>Metric 1</item>
+        <item>Metric 2</item>
+        <item>Metric 3</item>
+    </string-array>
+
 </resources>
