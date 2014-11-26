@@ -1,5 +1,6 @@
 package uk.ac.kcl.SEG_Project_2.activities;
 
+import android.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +13,6 @@ public class NetworkTest extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		final ApiRequest request = new ApiRequest(this);
 		request.setIndicator("SP.POP.TOTL");
 		request.setCountries("bra", "gbr");
@@ -28,7 +28,8 @@ public class NetworkTest extends Activity {
 			@Override
 			public void onComplete() {
 				Log.d(C.LOG_TAG, "Done!");
-				Log.d(C.LOG_TAG, "Found " + request.getResult().size() + " records");
+				Log.d(C.LOG_TAG, "Found " + request.getResult().size()
+						+ " records");
 			}
 		});
 		request.setOnFail(new WorldBankApiRequest.OnFailListener() {

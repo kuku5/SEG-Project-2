@@ -1,6 +1,10 @@
 package uk.ac.kcl.SEG_Project_2.activities;
 
+import java.util.ArrayList;
+
+import uk.ac.kcl.SEG_Project_2.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -9,12 +13,16 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import uk.ac.kcl.SEG_Project_2.R;
 
 public class WhichGas extends Activity implements OnClickListener {
 
 	Spinner spSelect;
-	String graphList[] = {"Graph type 1", "Graph type 2", "Graph type 3"};
+	String graphList[] = { "Graph type 1", "Graph type 2", "Graph type 3" };
+	TextView text;
+
+	Intent intent;
+	ArrayList countryList;
+	ArrayList gasAmounts = new ArrayList();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +35,13 @@ public class WhichGas extends Activity implements OnClickListener {
 
 	private void initialise() {
 		spSelect = (Spinner) findViewById(R.id.spSelect);
-
+		
+		intent = getIntent();
+		countryList = intent.getCharSequenceArrayListExtra("a");
+	
+		gasAmounts.add("13,561");
+		gasAmounts.add("493,505");
+		gasAmounts.add("244,235");
 	}
 
 	private void populateSpinner() {
@@ -62,6 +76,22 @@ public class WhichGas extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		if (v.getTag().equals("Graph type 1")) {
+
+			// change WhichGas.Class to new graph class
+			Intent i = new Intent(getBaseContext(), WhichGas.class);
+			i.putCharSequenceArrayListExtra("a", countryList);
+			i.putCharSequenceArrayListExtra("b", gasAmounts);
+
+			/*
+			 * Intent intent = getIntent(); ArrayList arr =
+			 * intent.getCharSequenceArrayListExtra("a");
+			 * 
+			 * Letter "a" being a "KEY"
+			 */
+			startActivity(i);
+		} else if (v.getTag().equals("Graph type 2")) {
+		
+		} else if (v.getTag().equals("Graph type 3")) {
 		}
 	}
 }
