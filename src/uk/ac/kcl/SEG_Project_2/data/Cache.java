@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Cache {
 
-	public static List<JSONObject> getData(Context context, WorldBankApiRequest request) {
+	public static List<JSONObject> getData(Context context, ApiRequest request) {
 		// find cache file
 		File cacheFile = findFile(context, request);
 		if (cacheFile == null) return null;
@@ -47,7 +47,7 @@ public class Cache {
 		return output;
 	}
 
-	public static void saveData(Context context, WorldBankApiRequest request, List<JSONObject> data) {
+	public static void saveData(Context context, ApiRequest request, List<JSONObject> data) {
 		// compile a string to save to the file
 		StringBuilder toSaveBuilder = new StringBuilder();
 		for (JSONObject o : data) {
@@ -71,12 +71,12 @@ public class Cache {
 		}
 	}
 
-	public static boolean hasData(Context context, WorldBankApiRequest request) {
+	public static boolean hasData(Context context, ApiRequest request) {
 		File cacheFile = findFile(context, request);
 		return !(cacheFile == null);
 	}
 
-	public static File findFile(Context context, WorldBankApiRequest request) {
+	public static File findFile(Context context, ApiRequest request) {
 		// create hash for request
 		String hash = request.createHash();
 
