@@ -60,7 +60,7 @@ public class Countries extends Activity {
 				List<JSONObject> result = apiRequest.getResult();
 				for (JSONObject r : result) {
 					try {
-						countryList.add(new Country(r.getString("id"), r.getString("name")));
+						countryList.add(new Country(r.getString("iso2Code"), r.getString("name")));
 					} catch (JSONException e) {
 						Log.d(C.LOG_TAG, "JSON Exception");
 					}

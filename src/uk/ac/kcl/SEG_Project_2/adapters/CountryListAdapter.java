@@ -1,13 +1,16 @@
 package uk.ac.kcl.SEG_Project_2.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import uk.ac.kcl.SEG_Project_2.R;
+import uk.ac.kcl.SEG_Project_2.constants.C;
 import uk.ac.kcl.SEG_Project_2.data.Country;
 
 import java.util.ArrayList;
@@ -48,6 +51,7 @@ public class CountryListAdapter extends BaseAdapter {
 		// children in each row
 		CheckBox cb;
 		TextView tv;
+		ImageView iv;
 
 		// get object to work with
 		Country c = countryList.get(position);
@@ -61,11 +65,13 @@ public class CountryListAdapter extends BaseAdapter {
 			// get views
 			cb = (CheckBox) view.findViewById(R.id.country_row_checkbox);
 			tv = (TextView) view.findViewById(R.id.country_row_textview);
+			iv = (ImageView) view.findViewById(R.id.country_row_imageview);
 
 			// create view holder
 			CountryRowViewHolder holder = new CountryRowViewHolder();
 			holder.cb = cb;
 			holder.tv = tv;
+			holder.iv = iv;
 			view.setTag(holder);
 
 			// set action listeners on the checkbox
@@ -83,14 +89,25 @@ public class CountryListAdapter extends BaseAdapter {
 			CountryRowViewHolder holder = (CountryRowViewHolder) view.getTag();
 			cb = holder.cb;
 			tv = holder.tv;
+			iv = holder.iv;
 		}
 
 		// set the position of this checkbox
 		cb.setTag(new Integer(position));
 
-		// set up view
+		// set up view basics
 		cb.setChecked(c.isSelected());
 		tv.setText(c.getName());
+
+		// set up flag
+		int flagId = context.getResources().getIdentifier(c.getId().toLowerCase(), "drawable", context.getApplicationContext().getPackageName());
+		Log.d(C.LOG_TAG, c.getId() + ": " + flagId);
+		if (flagId != 0) {
+			iv.setImageResource(flagId);
+			iv.setVisibility(View.VISIBLE);
+		} else {
+			iv.setVisibility(View.GONE);
+		}
 
 		// finish
 		return view;
@@ -107,5 +124,6 @@ public class CountryListAdapter extends BaseAdapter {
 	private class CountryRowViewHolder {
 		public CheckBox cb;
 		public TextView tv;
+		public ImageView iv;
 	}
 }
