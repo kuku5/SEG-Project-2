@@ -19,6 +19,7 @@ public class CountryListAdapter extends BaseAdapter implements Filterable {
 
 	private ArrayList<Country> originalCountryList;
 	private ArrayList<Country> countryList;
+	private ArrayList<Country> selectedCountries = new ArrayList<Country>();
 	private Context context;
 	private LayoutInflater inflater;
 	private String filterString = "";
@@ -81,8 +82,13 @@ public class CountryListAdapter extends BaseAdapter implements Filterable {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					CheckBox cb = (CheckBox) buttonView;
-					Integer position = (Integer) cb.getTag();
-					countryList.get(position).setSelected(isChecked);
+					if (isChecked) {
+						if (!selectedCountries.contains((Country) cb.getTag())) {
+							selectedCountries.add((Country) cb.getTag());
+						}
+					} else {
+						selectedCountries.remove((Country) cb.getTag());
+					}
 				}
 			});
 		} else {
@@ -95,10 +101,10 @@ public class CountryListAdapter extends BaseAdapter implements Filterable {
 		}
 
 		// set the position of this checkbox
-		cb.setTag(new Integer(position));
+		cb.setTag(c);
 
 		// set up checkbox
-		cb.setChecked(c.isSelected());
+		cb.setChecked(selectedCountries.contains(c));
 
 		// set bold/underline filter
 		SpannableStringBuilder ssb = new SpannableStringBuilder(c.getName());
@@ -133,11 +139,7 @@ public class CountryListAdapter extends BaseAdapter implements Filterable {
 	}
 
 	public List<Country> getSelectedCountries() {
-		ArrayList<Country> selected = new ArrayList<Country>();
-		for (Country c : countryList) {
-			if (c.isSelected()) selected.add(c);
-		}
-		return selected;
+		return selectedCountries;
 	}
 
 	@Override
