@@ -33,6 +33,7 @@ public class Countries extends Activity {
 	private ViewGroup loadingDisplay;
 	private ViewGroup mainDisplay;
 	private EditText filterTextView;
+	private ImageView filterClearButton;
 	private ListView countryListView;
 	private Button continueButton;
 
@@ -50,6 +51,7 @@ public class Countries extends Activity {
 		loadingDisplay = (ViewGroup) findViewById(R.id.country_loading_group);
 		mainDisplay = (ViewGroup) findViewById(R.id.country_main_group);
 		filterTextView = (EditText) findViewById(R.id.country_list_filter);
+		filterClearButton = (ImageView) findViewById(R.id.country_list_filter_clear);
 		countryListView = (ListView) findViewById(R.id.country_list);
 		continueButton = (Button) findViewById(R.id.country_list_continue);
 
@@ -61,11 +63,18 @@ public class Countries extends Activity {
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				filterClearButton.setVisibility(s.length() == 0 ? View.GONE : View.VISIBLE);
 				Countries.this.setFilter(s);
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
+			}
+		});
+		filterClearButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				filterTextView.setText("");
 			}
 		});
 		continueButton.setOnClickListener(new OnClickListener() {

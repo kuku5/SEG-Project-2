@@ -40,19 +40,36 @@
 		android:layout_height="fill_parent"
 		android:visibility="gone">
 
-		<EditText
-			android:id="@+id/country_list_filter"
+		<LinearLayout
+			android:id="@+id/country_list_filter_group"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:layout_alignParentTop="true"
-			android:hint="@string/country_filter"
-			android:drawableLeft="@android:drawable/ic_menu_search"/>
+			android:orientation="horizontal"
+			android:gravity="center">
+
+			<EditText
+				android:id="@+id/country_list_filter"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:layout_height="wrap_content"
+				android:hint="@string/country_filter"
+				android:drawableLeft="@android:drawable/ic_menu_search"/>
+
+			<ImageView
+				android:id="@+id/country_list_filter_clear"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@android:drawable/ic_menu_close_clear_cancel"
+				android:visibility="gone"/>
+
+		</LinearLayout>
 
 		<ListView
 			android:id="@+id/country_list"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:layout_below="@id/country_list_filter"
+			android:layout_below="@id/country_list_filter_group"
 			android:layout_above="@+id/country_list_continue"/>
 
 		<Button
