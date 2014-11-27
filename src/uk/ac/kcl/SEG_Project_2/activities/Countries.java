@@ -25,14 +25,10 @@ import uk.ac.kcl.SEG_Project_2.data.WorldBankApiRequest;
 
 public class Countries extends Activity {
 
-	private CheckBox ch;
-	private ArrayList selectedCountries = new ArrayList();
-
 	// view components
 	private ViewGroup loadingDisplay;
 	private ViewGroup mainDisplay;
 	private ListView countryListView;
-	//private Button btnProceed;
 
 	// data components
 	private final ArrayList<Country> countryList = new ArrayList<Country>();
@@ -40,6 +36,7 @@ public class Countries extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setTitle("Select a Country");
 		setContentView(R.layout.countries);
 		initialise();
 		populate();
@@ -50,10 +47,6 @@ public class Countries extends Activity {
 		loadingDisplay = (ViewGroup) findViewById(R.id.country_loading_group);
 		mainDisplay = (ViewGroup) findViewById(R.id.country_main_group);
 		countryListView = (ListView) findViewById(R.id.country_list);
-		//btnProceed = (Button) findViewById(R.id.btProceed);
-
-		// set up view components
-		//btnProceed.setOnClickListener(this);
 	}
 
 	private void populate() {
@@ -91,34 +84,6 @@ public class Countries extends Activity {
 			}
 		});
 		apiRequest.execute();
-
-		/*final LinearLayout lm = (LinearLayout) findViewById(R.id.llCountries);
-		for (int i = 0; i < countries.size(); i++) {
-			ch = new CheckBox(this);
-			ch.setOnClickListener(this);
-			ch.setTag(countries.get(i));
-			ch.setText(countries.get(i));
-			lm.addView(ch);
-		}*/
 	}
 
-	/*private void check(Object o) {
-		if (selectedCountries.contains(o)) {
-			selectedCountries.remove(o);
-		} else {
-			selectedCountries.add(o);
-		}
-	}*/
-
-	/*@Override
-	public void onClick(View v) {
-		check(v.getTag());
-		switch (v.getId()) {
-			case R.id.btProceed:
-				Intent i = new Intent(getBaseContext(), MetricSelection.class);
-				i.putCharSequenceArrayListExtra("a", selectedCountries);
-				startActivity(i);
-				break;
-		}
-	}*/
 }
