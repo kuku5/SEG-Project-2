@@ -60,6 +60,10 @@ public class Countries extends Activity {
 				List<JSONObject> result = apiRequest.getResult();
 				for (JSONObject r : result) {
 					try {
+						// check if this is a country, not just a grouping from the API
+						if (r.getString("longitude").equals("") || r.getString("latitude").equals("")) continue;
+
+						// add to list
 						countryList.add(new Country(r.getString("iso2Code"), r.getString("name")));
 					} catch (JSONException e) {
 						Log.d(C.LOG_TAG, "JSON Exception");
