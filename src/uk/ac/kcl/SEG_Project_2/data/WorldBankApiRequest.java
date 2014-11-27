@@ -94,7 +94,7 @@ public class WorldBankApiRequest implements ApiRequest {
     @Override
     public String createHash() {
 		// country list?
-		if (gettingCountries) return "countries" + Math.random();
+		if (gettingCountries) return "countries";
 
         // sanitise inputs for creating hash
         String countrySegment;
