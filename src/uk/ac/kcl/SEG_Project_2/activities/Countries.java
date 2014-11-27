@@ -3,6 +3,7 @@ package uk.ac.kcl.SEG_Project_2.activities;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import android.view.ViewGroup;
 import uk.ac.kcl.SEG_Project_2.R;
 import android.app.Activity;
 import android.content.Intent;
@@ -16,30 +17,31 @@ import android.widget.TextView;
 
 public class Countries extends Activity implements OnClickListener {
 
-	private String countryList[] = { "Lithuania", "United Kingdom",
-			"Wonderland" };
-	private ArrayList<String> countries = new ArrayList<String>(
-			Arrays.asList(countryList));
+	private String countryList[] = {"Lithuania", "United Kingdom", "Wonderland"};
+	private ArrayList<String> countries = new ArrayList<String>(Arrays.asList(countryList));
 	private Button btnProceed;
-	private TextView text;
 	private CheckBox ch;
 	private ArrayList selectedCountries = new ArrayList();
+
+	// view parts
+	private ViewGroup loadingDisplay;
+	private ViewGroup mainDisplay;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.countries);
-
 		initialise();
 		populate();
-
 	}
 
 	private void initialise() {
+		// collect view components
+		loadingDisplay = (ViewGroup) findViewById(R.id.country_loading_group);
+		mainDisplay = (ViewGroup) findViewById(R.id.country_main_group);
 
 		btnProceed = (Button) findViewById(R.id.btProceed);
 		btnProceed.setOnClickListener(this);
-
 	}
 
 	private void populate() {
@@ -50,7 +52,6 @@ public class Countries extends Activity implements OnClickListener {
 			ch.setTag(countries.get(i));
 			ch.setText(countries.get(i));
 			lm.addView(ch);
-
 		}
 	}
 
@@ -58,9 +59,7 @@ public class Countries extends Activity implements OnClickListener {
 		if (selectedCountries.contains(o)) {
 			selectedCountries.remove(o);
 		} else {
-
 			selectedCountries.add(o);
-
 		}
 	}
 
@@ -68,13 +67,11 @@ public class Countries extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		check(v.getTag());
 		switch (v.getId()) {
-		case R.id.btProceed:
-
-			Intent i = new Intent(getBaseContext(), MetricSelection.class);
-			i.putCharSequenceArrayListExtra("a", selectedCountries);
-			startActivity(i);
-			break;
+			case R.id.btProceed:
+				Intent i = new Intent(getBaseContext(), MetricSelection.class);
+				i.putCharSequenceArrayListExtra("a", selectedCountries);
+				startActivity(i);
+				break;
 		}
-
 	}
 }
