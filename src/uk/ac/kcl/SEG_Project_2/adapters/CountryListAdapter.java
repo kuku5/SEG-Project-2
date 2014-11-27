@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,12 +100,13 @@ public class CountryListAdapter extends BaseAdapter implements Filterable {
 		// set up checkbox
 		cb.setChecked(c.isSelected());
 
-		// set bold filter
+		// set bold/underline filter
 		SpannableStringBuilder ssb = new SpannableStringBuilder(c.getName());
 		if (!filterString.equals("")) {
 			int index = c.getName().toLowerCase().indexOf(filterString.toLowerCase());
 			while (index >= 0) {
 				ssb.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), index, index + filterString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				ssb.setSpan(new UnderlineSpan(), index, index + filterString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 				index = c.getName().toLowerCase().indexOf(filterString.toLowerCase(), index + 1);
 			}
 		}
