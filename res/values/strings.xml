@@ -9,9 +9,10 @@
     <string name="selection_mectric">Metric Selection</string>
 
     <string-array name="list_gas_type">
-        <item>Gas 1</item>
-        <item>Gas 2</item>
-        <item>Gas 3</item>
+        <item>CO2</item>
+        <item>Methane</item>
+        <item>Nitrous</item>
+        <item>Other (HFC, PFC and SF6)</item>
     </string-array>
     <string-array name="list_metric_type">
         <item>Metric 1</item>

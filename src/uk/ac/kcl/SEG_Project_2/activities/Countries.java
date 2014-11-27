@@ -1,7 +1,9 @@
 package uk.ac.kcl.SEG_Project_2.activities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import uk.ac.kcl.SEG_Project_2.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,40 +11,19 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import uk.ac.kcl.SEG_Project_2.R;
+import android.widget.TextView;
 
 public class Countries extends Activity implements OnClickListener {
 
 	private String countryList[] = { "Lithuania", "United Kingdom",
-			"Wonderland", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test",
-			"test", "test", "test", "test", "test", "test", "test", "test" };
+			"Wonderland" };
+	private ArrayList<String> countries = new ArrayList<String>(
+			Arrays.asList(countryList));
 	private Button btnProceed;
-	private EditText text;
+	private TextView text;
 	private CheckBox ch;
-
-	ArrayList<String> arr = new ArrayList<String>();
+	private ArrayList selectedCountries = new ArrayList();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,36 +40,39 @@ public class Countries extends Activity implements OnClickListener {
 		btnProceed = (Button) findViewById(R.id.btProceed);
 		btnProceed.setOnClickListener(this);
 
-		text = (EditText) findViewById(R.id.etText);
-
 	}
 
 	private void populate() {
 		final LinearLayout lm = (LinearLayout) findViewById(R.id.llCountries);
-		ScrollView sv = new ScrollView(this);
-		LinearLayout ll = new LinearLayout(this);
-		ll.setOrientation(LinearLayout.VERTICAL);
-		sv.addView(ll);
-
-		for (int i = 0; i < countryList.length; i++) {
+		for (int i = 0; i < countries.size(); i++) {
 			ch = new CheckBox(this);
 			ch.setOnClickListener(this);
-			ch.setTag(countryList[i]);
-			ch.setText(countryList[i]);
-			ll.addView(ch);
+			ch.setTag(countries.get(i));
+			ch.setText(countries.get(i));
+			lm.addView(ch);
 
 		}
+	}
 
-		lm.addView(sv);
+	private void check(Object o) {
+		if (selectedCountries.contains(o)) {
+			selectedCountries.remove(o);
+		} else {
 
+			selectedCountries.add(o);
+
+		}
 	}
 
 	@Override
 	public void onClick(View v) {
-
+		check(v.getTag());
 		switch (v.getId()) {
 		case R.id.btProceed:
-			startActivity(new Intent(getBaseContext(), MetricSelection.class));
+
+			Intent i = new Intent(getBaseContext(), MetricSelection.class);
+			i.putCharSequenceArrayListExtra("a", selectedCountries);
+			startActivity(i);
 			break;
 		}
 

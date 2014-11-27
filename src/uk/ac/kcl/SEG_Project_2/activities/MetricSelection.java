@@ -1,5 +1,8 @@
 package uk.ac.kcl.SEG_Project_2.activities;
 
+import java.util.ArrayList;
+
+import uk.ac.kcl.SEG_Project_2.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +10,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-import uk.ac.kcl.SEG_Project_2.R;
 
 public class MetricSelection extends Activity implements OnClickListener {
 
@@ -44,7 +46,12 @@ public class MetricSelection extends Activity implements OnClickListener {
 
 		switch (v.getId()) {
 		case R.id.btGasses:
-			startActivity(new Intent(getBaseContext(), WhichGas.class));
+
+			Intent intent = getIntent();
+			ArrayList arr = intent.getCharSequenceArrayListExtra("a");
+			Intent i = new Intent(getBaseContext(), WhichGas.class);
+			i.putCharSequenceArrayListExtra("a", arr);
+			startActivity(i);
 			break;
 		case R.id.btTrees:
 			break;
