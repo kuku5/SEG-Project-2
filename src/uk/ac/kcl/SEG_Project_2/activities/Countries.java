@@ -1,8 +1,6 @@
 package uk.ac.kcl.SEG_Project_2.activities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import android.util.Log;
 import android.util.Pair;
@@ -69,6 +67,14 @@ public class Countries extends Activity {
 						Log.d(C.LOG_TAG, "JSON Exception");
 					}
 				}
+
+				// sort the country list
+				Collections.sort(countryList, new Comparator<Country>() {
+					@Override
+					public int compare(Country lhs, Country rhs) {
+						return lhs.getName().compareTo(rhs.getName());
+					}
+				});
 
 				// create and apply adapter
 				CountryListAdapter adapter = new CountryListAdapter(apiRequest.getContext());
