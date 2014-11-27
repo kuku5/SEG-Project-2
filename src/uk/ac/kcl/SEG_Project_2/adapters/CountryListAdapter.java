@@ -5,10 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import uk.ac.kcl.SEG_Project_2.R;
 import uk.ac.kcl.SEG_Project_2.constants.C;
 import uk.ac.kcl.SEG_Project_2.data.Country;
@@ -49,7 +46,7 @@ public class CountryListAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// children in each row
-		CheckBox cb;
+		final CheckBox cb;
 		TextView tv;
 		ImageView iv;
 
@@ -75,12 +72,12 @@ public class CountryListAdapter extends BaseAdapter {
 			view.setTag(holder);
 
 			// set action listeners on the checkbox
-			cb.setOnClickListener(new View.OnClickListener() {
+			cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 				@Override
-				public void onClick(View v) {
-					CheckBox cb = (CheckBox) v;
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					CheckBox cb = (CheckBox) buttonView;
 					Integer position = (Integer) cb.getTag();
-					countryList.get(position).setSelected(true);
+					countryList.get(position).setSelected(isChecked);
 				}
 			});
 		} else {
@@ -101,13 +98,20 @@ public class CountryListAdapter extends BaseAdapter {
 
 		// set up flag
 		int flagId = context.getResources().getIdentifier(c.getId().toLowerCase(), "drawable", context.getApplicationContext().getPackageName());
-		Log.d(C.LOG_TAG, c.getId() + ": " + flagId);
 		if (flagId != 0) {
 			iv.setImageResource(flagId);
 			iv.setVisibility(View.VISIBLE);
 		} else {
 			iv.setVisibility(View.GONE);
 		}
+
+		// set a click listener
+		view.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				cb.toggle();
+			}
+		});
 
 		// finish
 		return view;
@@ -122,6 +126,7 @@ public class CountryListAdapter extends BaseAdapter {
 	}
 
 	private class CountryRowViewHolder {
+
 		public CheckBox cb;
 		public TextView tv;
 		public ImageView iv;
