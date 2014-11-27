@@ -4,6 +4,7 @@
 	<!-- COUNTRIES -->
     <string name="countries">Countries</string>
 	<string name="loading_countries">Loading country list,\nPlease wait</string>
+	<string name="country_filter">Filter…</string>
 
     <string name="app_name">SEG2</string>
     <string name="action_settings">Settings</string>

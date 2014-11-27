@@ -1,30 +1,34 @@
 package uk.ac.kcl.SEG_Project_2.adapters;
 
 import android.content.Context;
-import android.util.Log;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import uk.ac.kcl.SEG_Project_2.R;
-import uk.ac.kcl.SEG_Project_2.constants.C;
 import uk.ac.kcl.SEG_Project_2.data.Country;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CountryListAdapter extends BaseAdapter {
+public class CountryListAdapter extends BaseAdapter implements Filterable {
 
+	private ArrayList<Country> originalCountryList;
 	private ArrayList<Country> countryList;
 	private Context context;
 	private LayoutInflater inflater;
+	private String filterString = "";
 
 	public CountryListAdapter(Context context) {
 		this.context = context;
 		this.inflater = LayoutInflater.from(context);
 	}
 
-	public void setCountryList(ArrayList<Country> countryList) {
+	public void setCountryList(ArrayList<Country> countryList, boolean setOriginal) {
+		if (setOriginal) this.originalCountryList = countryList;
 		this.countryList = countryList;
 	}
 
@@ -92,9 +96,19 @@ public class CountryListAdapter extends BaseAdapter {
 		// set the position of this checkbox
 		cb.setTag(new Integer(position));
 
-		// set up view basics
+		// set up checkbox
 		cb.setChecked(c.isSelected());
-		tv.setText(c.getName());
+
+		// set bold filter
+		SpannableStringBuilder ssb = new SpannableStringBuilder(c.getName());
+		if (!filterString.equals("")) {
+			int index = c.getName().toLowerCase().indexOf(filterString.toLowerCase());
+			while (index >= 0) {
+				ssb.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), index, index + filterString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				index = c.getName().toLowerCase().indexOf(filterString.toLowerCase(), index + 1);
+			}
+		}
+		tv.setText(ssb);
 
 		// set up flag
 		int flagId = context.getResources().getIdentifier("flag_" + c.getId().toLowerCase(), "drawable", context.getApplicationContext().getPackageName());
@@ -122,6 +136,47 @@ public class CountryListAdapter extends BaseAdapter {
 			if (c.isSelected()) selected.add(c);
 		}
 		return selected;
+	}
+
+	@Override
+	public Filter getFilter() {
+		return new Filter() {
+			@Override
+			protected FilterResults performFiltering(CharSequence constraint) {
+				filterString = constraint == null ? "" : constraint.toString();
+				FilterResults result = new FilterResults();
+				if (constraint == null || constraint.equals("")) {
+					result.values = originalCountryList;
+					result.count = originalCountryList.size();
+				} else {
+					ArrayList<Country> filteredDataset = new ArrayList<Country>();
+					for (Country c : originalCountryList) {
+						if (c.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
+							filteredDataset.add(c);
+						}
+					}
+					result.values = filteredDataset;
+					result.count = filteredDataset.size();
+				}
+				return result;
+			}
+
+			@Override
+			protected void publishResults(CharSequence constraint, FilterResults results) {
+				if (results.count == 0) {
+					setCountryList(new ArrayList<Country>(), false);
+					notifyDataSetChanged();
+				} else {
+					try {
+						setCountryList((ArrayList<Country>) results.values, false);
+						notifyDataSetChanged();
+					} catch (ClassCastException e) {
+						setCountryList(new ArrayList<Country>(), false);
+						notifyDataSetChanged();
+					}
+				}
+			}
+		};
 	}
 
 	private class CountryRowViewHolder {

@@ -2,6 +2,8 @@ package uk.ac.kcl.SEG_Project_2.activities;
 
 import java.util.*;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
 import android.view.ViewGroup;
@@ -23,13 +25,13 @@ import uk.ac.kcl.SEG_Project_2.data.WorldBankApiRequest;
 
 public class Countries extends Activity {
 
+	// data components
+	private final ArrayList<Country> countryList = new ArrayList<Country>();
 	// view components
 	private ViewGroup loadingDisplay;
 	private ViewGroup mainDisplay;
+	private EditText filterTextView;
 	private ListView countryListView;
-
-	// data components
-	private final ArrayList<Country> countryList = new ArrayList<Country>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +46,24 @@ public class Countries extends Activity {
 		// collect view components
 		loadingDisplay = (ViewGroup) findViewById(R.id.country_loading_group);
 		mainDisplay = (ViewGroup) findViewById(R.id.country_main_group);
+		filterTextView = (EditText) findViewById(R.id.country_list_filter);
 		countryListView = (ListView) findViewById(R.id.country_list);
+
+		// set action listeners
+		filterTextView.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				Countries.this.setFilter(s);
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		});
 	}
 
 	private void populate() {
@@ -78,7 +97,7 @@ public class Countries extends Activity {
 
 				// create and apply adapter
 				CountryListAdapter adapter = new CountryListAdapter(apiRequest.getContext());
-				adapter.setCountryList(countryList);
+				adapter.setCountryList(countryList, true);
 				countryListView.setAdapter(adapter);
 
 				// swap views
@@ -94,6 +113,13 @@ public class Countries extends Activity {
 			}
 		});
 		apiRequest.execute();
+	}
+
+	public void setFilter(CharSequence filter) {
+		CountryListAdapter adapter = (CountryListAdapter) countryListView.getAdapter();
+		if (adapter != null) {
+			adapter.getFilter().filter(filter);
+		}
 	}
 
 }

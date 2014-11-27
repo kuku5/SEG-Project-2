@@ -29,18 +29,27 @@
 
 	</RelativeLayout>
 
-	<LinearLayout
+	<RelativeLayout
 		android:id="@+id/country_main_group"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:orientation="vertical"
 		android:visibility="gone">
+
+		<EditText
+			android:id="@+id/country_list_filter"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_alignParentTop="true"
+			android:hint="@string/country_filter"
+			android:drawableLeft="@android:drawable/ic_menu_search"/>
 
 		<ListView
 			android:id="@+id/country_list"
 			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"/>
+			android:layout_height="wrap_content"
+			android:layout_below="@id/country_list_filter"
+			android:layout_alignParentBottom="true"/>
 
-	</LinearLayout>
+	</RelativeLayout>
 
 </LinearLayout>
