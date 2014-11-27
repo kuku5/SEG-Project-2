@@ -97,12 +97,11 @@ public class CountryListAdapter extends BaseAdapter {
 		tv.setText(c.getName());
 
 		// set up flag
-		int flagId = context.getResources().getIdentifier(c.getId().toLowerCase(), "drawable", context.getApplicationContext().getPackageName());
+		int flagId = context.getResources().getIdentifier("flag_" + c.getId().toLowerCase(), "drawable", context.getApplicationContext().getPackageName());
 		if (flagId != 0) {
 			iv.setImageResource(flagId);
-			iv.setVisibility(View.VISIBLE);
 		} else {
-			iv.setVisibility(View.GONE);
+			iv.setImageResource(R.drawable.flag_unknown);
 		}
 
 		// set a click listener
