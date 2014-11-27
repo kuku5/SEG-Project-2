@@ -3,6 +3,7 @@ package uk.ac.kcl.SEG_Project_2.activities;
 import java.util.*;
 
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
@@ -27,11 +28,13 @@ public class Countries extends Activity {
 
 	// data components
 	private final ArrayList<Country> countryList = new ArrayList<Country>();
+
 	// view components
 	private ViewGroup loadingDisplay;
 	private ViewGroup mainDisplay;
 	private EditText filterTextView;
 	private ListView countryListView;
+	private Button continueButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class Countries extends Activity {
 		mainDisplay = (ViewGroup) findViewById(R.id.country_main_group);
 		filterTextView = (EditText) findViewById(R.id.country_list_filter);
 		countryListView = (ListView) findViewById(R.id.country_list);
+		continueButton = (Button) findViewById(R.id.country_list_continue);
 
 		// set action listeners
 		filterTextView.addTextChangedListener(new TextWatcher() {
@@ -62,6 +66,28 @@ public class Countries extends Activity {
 
 			@Override
 			public void afterTextChanged(Editable s) {
+			}
+		});
+		continueButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				/*
+				TODO: implement this fully
+				Right now, this just pops up a message with the selected countries
+				This needs to be updated to add them to an intent and pass them on to the next activity
+				 */
+
+				CountryListAdapter adapter = (CountryListAdapter) countryListView.getAdapter();
+				if (adapter != null && !adapter.getSelectedCountries().isEmpty()) {
+					ArrayList<Country> selectedCountries = (ArrayList<Country>) adapter.getSelectedCountries();
+					ArrayList<String> selectedCodes = new ArrayList<String>();
+					for (Country c : selectedCountries) {
+						selectedCodes.add(c.getId());
+					}
+					Toast.makeText(getBaseContext(), "Selected: " + TextUtils.join(", ", selectedCodes), Toast.LENGTH_LONG).show();
+				} else {
+					Toast.makeText(getBaseContext(), "You did not select any countries", Toast.LENGTH_LONG).show();
+				}
 			}
 		});
 	}

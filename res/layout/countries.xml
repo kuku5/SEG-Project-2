@@ -1,7 +1,12 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:layout_width="fill_parent"
-			  android:layout_height="fill_parent"
-			  android:orientation="vertical">
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	android:focusable="true"
+	android:focusableInTouchMode="true">
+
+	<requestFocus/>
 
 	<RelativeLayout
 		android:id="@+id/country_loading_group"
@@ -48,7 +53,14 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:layout_below="@id/country_list_filter"
-			android:layout_alignParentBottom="true"/>
+			android:layout_above="@+id/country_list_continue"/>
+
+		<Button
+			android:id="@id/country_list_continue"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:text="@string/country_continue"/>
 
 	</RelativeLayout>
 
