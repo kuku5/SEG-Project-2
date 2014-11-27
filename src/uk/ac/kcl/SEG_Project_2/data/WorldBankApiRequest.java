@@ -144,7 +144,7 @@ public class WorldBankApiRequest implements ApiRequest {
 		}
 
 		// did we specify some indicators?
-		if (indicator == null) {
+		if (indicator == null && !gettingCountries) {
 			Log.d(C.LOG_TAG, "Error: did not set any indicators for ApiRequest");
 			status = Status.FAILED;
 			finish();
@@ -170,7 +170,7 @@ public class WorldBankApiRequest implements ApiRequest {
 		// build the URI
 		final String compiledUri;
 		if (gettingCountries) {
-			compiledUri = "";
+			compiledUri = "http://api.worldbank.org/countries/?format=json&per_page=300";
 		} else {
 			String countriesSegment = countries.size() > 0 ? TextUtils.join(";", countries) : "all";
 			String frequencySegment = "Y";
