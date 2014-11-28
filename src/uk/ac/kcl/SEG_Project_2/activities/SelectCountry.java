@@ -85,14 +85,10 @@ public class SelectCountry extends Activity {
 				if (adapter != null && !adapter.getSelectedCountries().isEmpty()) {
 					// collect countries
 					ArrayList<Country> selectedCountries = (ArrayList<Country>) adapter.getSelectedCountries();
-					ArrayList<String> selectedCodes = new ArrayList<String>();
-					for (Country c : selectedCountries) {
-						selectedCodes.add(c.getId());
-					}
-					Toast.makeText(getBaseContext(), "Selected: " + TextUtils.join(", ", selectedCodes), Toast.LENGTH_LONG).show();
 
 					// send to next activity
 					Intent sendToSelectMetric = new Intent(getBaseContext(), SelectMetric.class);
+					sendToSelectMetric.putParcelableArrayListExtra("countries", selectedCountries);
 					startActivity(sendToSelectMetric);
 				} else {
 					Toast.makeText(getBaseContext(), "You did not select any countries", Toast.LENGTH_LONG).show();
