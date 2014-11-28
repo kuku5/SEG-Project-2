@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import uk.ac.kcl.SEG_Project_2.R;
+import uk.ac.kcl.SEG_Project_2.constants.C;
 import uk.ac.kcl.SEG_Project_2.data.Country;
 
 import java.util.ArrayList;
@@ -84,6 +85,16 @@ public class CountryListAdapter extends BaseAdapter implements Filterable {
 					CheckBox cb = (CheckBox) buttonView;
 					if (isChecked) {
 						if (!selectedCountries.contains((Country) cb.getTag())) {
+							// enforce a maximum number of countries
+							if (selectedCountries.size() >= C.MAX_COUNTRIES) {
+								Toast.makeText(
+										context,
+										context.getResources().getString(R.string.country_too_many, C.MAX_COUNTRIES),
+										Toast.LENGTH_LONG
+								).show();
+								cb.toggle();
+								return;
+							}
 							selectedCountries.add((Country) cb.getTag());
 						}
 					} else {
