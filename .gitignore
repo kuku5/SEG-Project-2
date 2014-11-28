@@ -13,6 +13,10 @@
 *.iml
 project.properties
 
+# Eclipse junk
+.project
+.classpath
+
 # Generated files
 bin/
 gen/

@@ -1,161 +1,351 @@
 package uk.ac.kcl.SEG_Project_2.data;
 
+import android.app.Activity;
+import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import uk.ac.kcl.SEG_Project_2.constants.C;
+import uk.ac.kcl.SEG_Project_2.constants.Utils;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
-public interface WorldBankApiRequest {
+public class WorldBankApiRequest implements ApiRequest {
 
-	/*
-	Request builders
-	 */
+	private boolean finished = false;
+	private Status status = Status.WAITING;
+	private int timeout = 20000;
 
-	/**
-	 * Set the indicator that this request will fetch
-	 * @param indicator The indicator to query
-	 */
-	public void setIndicator(String indicator);
+	// request structure fields
+	private String indicator = "";
+	private List<String> countries = null;
+	private int startMonth = 0;
+	private int startYear = 0;
+	private int endMonth = 0;
+	private int endYear = 0;
+	private Frequency frequency = Frequency.YEARLY;
+	private boolean forceFresh = false;
+	private boolean gettingCountries = false;
 
-	/**
-	 * Set the countries that this request will fetch data for
-	 * @param countries The countries to query (defaults to all)
-	 */
-	public void setCountries(String... countries);
+	// threading fields
+	private OnCompleteListener onComplete;
+	private OnFailListener onFail;
+	private OnCancelListener onCancel;
+	private OnProgressUpdateListener onProgressUpdate;
+	private Activity activity;
+	private Context context;
 
-	/**
-	 * Set the date range that this request will fetch data for
-	 * @param startMonth The month at the start of the date range (set to 0 to search year-only)
-	 * @param startYear The year at the start of the date range
-	 * @param endMonth The month at the end of the date range (set to 0 to search year-only)
-	 * @param endYear The year at the end of the date range
-	 */
-	public void setDateRange(int startMonth, int startYear, int endMonth, int endYear);
+	// request fields
+	private List<JSONObject> result = new ArrayList<JSONObject>();
+	private HttpUriRequest requestBase;
 
-	/**
-	 * Set the frequency of data that this query should fetch (may be ignored by the API
-	 * @param frequency The frequency of data to collect (yearly, quarterly or monthly)
-	 */
-	public void setFrequency(Frequency frequency);
-
-	/**
-	 * Set whether the request should bypass the cache and forcibly collect fresh data
-	 * @param forceFresh True for forcing fresh data; defaults to false
-	 */
-	public void setForceFresh(boolean forceFresh);
-
-    /**
-     * Create a hash to represent the request
-     * @return a hash representing the request
-     */
-    public String createHash();
-
-	/*
-	Request running behaviour modifiers
-	 */
-
-	/**
-	 * Set a listener for request completion
-	 * @param onComplete Request completion callback listener
-	 */
-	public void setOnComplete(OnCompleteListener onComplete);
-
-	/**
-	 * Set a listener for request failure
-	 * @param onFail Request failure callback listener
-	 */
-	public void setOnFail(OnFailListener onFail);
-
-	/**
-	 * Set a listener for request cancellation
-	 * @param onCancel Request cancellation callback listener
-	 */
-	public void setOnCancel(OnCancelListener onCancel);
-
-	/**
-	 * Set a listener for request progress update
-	 * @param onStatusUpdate Request progress update callback listener
-	 */
-	public void setOnProgressUpdate(OnProgressUpdateListener onStatusUpdate);
-
-	/*
-	Request execution methods
-	 */
-
-	/**
-	 * Start execution of the method
-	 */
-	public void execute();
-
-	/**
-	 * Cancel an already-executing method
-	 */
-	public void cancel();
-
-	/*
-	Request result accessors
-	 */
-
-	/**
-	 * Get the current status of the request
-	 * @return The current status of the request
-	 */
-	public Status getStatus();
-
-	/**
-	 * Get the data returned by the request
-	 * @return The data returned by the request
-	 */
-	public List<JSONObject> getResult();
-
-	/*
-	Request status/settings
-	 */
-
-	public enum Frequency {
-		MONTHLY,
-		QUARTERLY,
-		YEARLY
+	// create a new request and handler
+	public WorldBankApiRequest(Activity activity) {
+		this.activity = activity;
+		this.context = activity.getBaseContext();
 	}
 
-	public enum Status {
-		WAITING,
-		EXECUTING,
-		COMPLETED,
-		FAILED,
-		CANCELLED
+	// REQUEST-BUILDING METHODS
+
+	@Override
+	public void setIndicator(String indicator) {
+		this.indicator = indicator;
 	}
 
-	/*
-	Listener classes
-	 */
-
-	/**
-	 * Called when the request completes
-	 */
-	public interface OnCompleteListener {
-		public void onComplete();
+	@Override
+	public void setCountries(String... countries) {
+		this.countries = Arrays.asList(countries);
 	}
 
-	/**
-	 * Called when the request fails
-	 */
-	public interface OnFailListener {
-		public void onFail();
+	@Override
+	public void setDateRange(int startMonth, int startYear, int endMonth, int endYear) {
+		this.startMonth = startMonth;
+		this.startYear = startYear;
+		this.endMonth = endMonth;
+		this.endYear = endYear;
 	}
 
-	/**
-	 * Called when the request is cancelled
-	 */
-	public interface OnCancelListener {
-		public void onCancel();
+	@Override
+	public void setFrequency(Frequency frequency) {
+		this.frequency = frequency;
 	}
 
-	/**
-	 * Called when the request progress updates
-	 * progress will be between 0 and 1
-	 */
-	public interface OnProgressUpdateListener {
-		public void onProgressUpdate(float progress);
+	@Override
+	public void setForceFresh(boolean forceFresh) {
+		this.forceFresh = forceFresh;
+	}
+
+	public void setGettingCountries(boolean gettingCountries) {
+		this.gettingCountries = gettingCountries;
+	}
+
+	@Override
+	public String createHash() {
+		// country list?
+		if (gettingCountries) return "countries";
+
+		// sanitise inputs for creating hash
+		String countrySegment;
+		if (countries == null || countries.size() == 0) {
+			countrySegment = "all";
+		} else {
+			String[] sorted = (String[]) countries.toArray();
+			Arrays.sort(sorted);
+			countrySegment = TextUtils.join(";", sorted);
+		}
+
+		// create hash
+		return Utils.createSHA256(indicator + countrySegment + startMonth + startYear + endMonth + endYear + frequency.toString());
+	}
+
+	// set handlers
+
+	@Override
+	public void setOnComplete(OnCompleteListener onComplete) {
+		this.onComplete = onComplete;
+	}
+
+	@Override
+	public void setOnFail(OnFailListener onFail) {
+		this.onFail = onFail;
+	}
+
+	@Override
+	public void setOnCancel(OnCancelListener onCancel) {
+		this.onCancel = onCancel;
+	}
+
+	@Override
+	public void setOnProgressUpdate(OnProgressUpdateListener onProgressUpdate) {
+		this.onProgressUpdate = onProgressUpdate;
+	}
+
+	// execute the request
+	@Override
+	public void execute() {
+		// requests can be executed only once
+		if (status != Status.WAITING) {
+			Log.d(C.LOG_TAG, "Error: trying to re-use an ApiRequest");
+			status = Status.FAILED;
+			finish();
+			return;
+		}
+
+		// did we specify some indicators?
+		if (indicator == null && !gettingCountries) {
+			Log.d(C.LOG_TAG, "Error: did not set any indicators for ApiRequest");
+			status = Status.FAILED;
+			finish();
+			return;
+		}
+
+		// update status
+		status = Status.EXECUTING;
+		sendProgressUpdate(0, 0);
+
+		// check if this data is already in the cache
+		if (Cache.hasData(context, this)) {
+			List<JSONObject> data = Cache.getData(context, this);
+			if (data != null) {
+				sendProgressUpdate(1, 1);
+				result = data;
+				status = Status.COMPLETED;
+				finish();
+				return;
+			}
+		}
+
+		// build the URI
+		final String compiledUri;
+		if (gettingCountries) {
+			compiledUri = "http://api.worldbank.org/countries/?format=json&per_page=300";
+		} else {
+			String countriesSegment = countries.size() > 0 ? TextUtils.join(";", countries) : "all";
+			String frequencySegment = "Y";
+			if (frequency == Frequency.QUARTERLY) frequencySegment = "Q";
+			if (frequency == Frequency.MONTHLY) frequencySegment = "M";
+			String dateSegment = "";
+			if (startYear != 0 && endYear != 0) {
+				if (startMonth != 0 && endMonth != 0) {
+					dateSegment = "&date=" + startYear + "M" + startMonth + ":" + endYear + "M" + endMonth;
+				} else {
+					dateSegment = "&date=" + startYear + ":" + endYear;
+				}
+			}
+			compiledUri = String.format(C.API_URI_FORMAT, countriesSegment, indicator, frequencySegment, dateSegment);
+		}
+
+		// build and execute the request on a thread
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// start tracking pages
+				int lastPageLoaded = 0;
+				int totalPages = 1;
+
+				// did the loop below fail at any point?
+				int responseCode = 0;
+				boolean failed = false;
+
+				// loop to get all pages
+				while (lastPageLoaded < totalPages) {
+					// create client
+					HttpParams params = new BasicHttpParams();
+					HttpConnectionParams.setConnectionTimeout(params, timeout);
+					HttpConnectionParams.setSoTimeout(params, timeout);
+					HttpClient httpClient = new DefaultHttpClient(params);
+
+					// execute the request
+					try {
+						// build request
+						requestBase = new HttpGet(compiledUri.replace("::PAGE::", "" + (lastPageLoaded + 1)));
+						requestBase.addHeader("Content-type", "application/json");
+
+						// load response
+						HttpResponse httpResponse = httpClient.execute(requestBase);
+						responseCode = httpResponse.getStatusLine().getStatusCode();
+						HttpEntity httpEntity = httpResponse.getEntity();
+						String serverReply = new Scanner(httpEntity.getContent()).useDelimiter("\\A").next();
+						JSONArray responseArray = new JSONArray(serverReply);
+
+						// split into sections
+						JSONObject paging = responseArray.getJSONObject(0);
+						JSONArray data = responseArray.getJSONArray(1);
+
+						// update paging info
+						lastPageLoaded = paging.getInt("page");
+						totalPages = paging.getInt("pages");
+						sendProgressUpdate(lastPageLoaded, totalPages);
+
+						// add data to result
+						for (int i = 0; i < data.length(); ++i) {
+							result.add(data.getJSONObject(i));
+						}
+					} catch (NoSuchElementException e) {
+						Log.d(C.LOG_TAG, "Error: Empty response when executing '" + compiledUri + "'");
+						failed = true;
+						break;
+					} catch (NullPointerException e) {
+						Log.d(C.LOG_TAG, "Error: NPE when executing '" + compiledUri + "'");
+						failed = true;
+						break;
+					} catch (IOException e) {
+						// report the error
+						Log.d(C.LOG_TAG, "Error: IO error (usually a timeout) when executing '" + compiledUri + "'; " + e.getMessage());
+						failed = true;
+						break;
+					} catch (JSONException e) {
+						// report the error
+						Log.d(C.LOG_TAG, "Error: JSON exception when executing '" + compiledUri + "'; " + e.getMessage());
+						failed = true;
+						break;
+					}
+				}
+
+				// did the above code fail?
+				if (failed || !(responseCode >= 200 && responseCode < 300)) {
+					// abandon ship!
+					status = Status.FAILED;
+					finish();
+					return;
+				}
+
+				// save into cache
+				Cache.saveData(context, WorldBankApiRequest.this, result);
+
+				status = Status.COMPLETED;
+				finish();
+			}
+		}).start();
+	}
+
+	// cancel the request
+	@Override
+	public void cancel() {
+		status = Status.CANCELLED;
+		finish();
+		try {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					requestBase.abort();
+				}
+			}).start();
+		} catch (UnsupportedOperationException e) {
+			// don't worry about it!
+		}
+	}
+
+	// finish the request and execute one of the result handlers
+	private void finish() {
+		// this is run-once
+		if (finished) return;
+		finished = true;
+
+		// run the correct method
+		if (status == Status.COMPLETED && onComplete != null) activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				onComplete.onComplete();
+			}
+		});
+		if (status == Status.FAILED && onFail != null) activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				onFail.onFail();
+			}
+		});
+		if (status == Status.CANCELLED && onCancel != null) activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				onCancel.onCancel();
+			}
+		});
+	}
+
+	// send a progress update notice to the caller
+	private void sendProgressUpdate(final int currentProgress, final int totalProgress) {
+		if (onProgressUpdate == null) return;
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				onProgressUpdate.onProgressUpdate(totalProgress > 0 ? (float) currentProgress / totalProgress : 0);
+			}
+		});
+	}
+
+	// get the creating activity (nb. accessible within a result handling Runnable)
+	public Activity getActivity() {
+		return activity;
+	}
+
+	// get the creating context (nb. accessible within a result handling Runnable)
+	public Context getContext() {
+		return context;
+	}
+
+	// get the status of the request
+	@Override
+	public Status getStatus() {
+		return status;
+	}
+
+	// get the resulting list of JSONObjects (nb. accessible within a result handling Runnable)
+	@Override
+	public List<JSONObject> getResult() {
+		return result;
 	}
 
 }

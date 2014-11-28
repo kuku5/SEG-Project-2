@@ -12,4 +12,7 @@ public class C {
 	/* DEBUGGING */
 	public static final String LOG_TAG = "++ SEG2 ++";
 
+	/* OPTIONS */
+	public static final int MAX_COUNTRIES = 4;
+
 }
