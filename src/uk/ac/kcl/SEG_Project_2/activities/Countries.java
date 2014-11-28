@@ -1,28 +1,29 @@
 package uk.ac.kcl.SEG_Project_2.activities;
 
-import java.util.*;
-
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Pair;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import uk.ac.kcl.SEG_Project_2.R;
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
 import uk.ac.kcl.SEG_Project_2.adapters.CountryListAdapter;
 import uk.ac.kcl.SEG_Project_2.constants.C;
 import uk.ac.kcl.SEG_Project_2.data.ApiRequest;
 import uk.ac.kcl.SEG_Project_2.data.Country;
 import uk.ac.kcl.SEG_Project_2.data.WorldBankApiRequest;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class Countries extends Activity {
 
@@ -80,20 +81,19 @@ public class Countries extends Activity {
 		continueButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				/*
-				TODO: implement this fully
-				Right now, this just pops up a message with the selected countries
-				This needs to be updated to add them to an intent and pass them on to the next activity
-				 */
-
 				CountryListAdapter adapter = (CountryListAdapter) countryListView.getAdapter();
 				if (adapter != null && !adapter.getSelectedCountries().isEmpty()) {
+					// collect countries
 					ArrayList<Country> selectedCountries = (ArrayList<Country>) adapter.getSelectedCountries();
 					ArrayList<String> selectedCodes = new ArrayList<String>();
 					for (Country c : selectedCountries) {
 						selectedCodes.add(c.getId());
 					}
 					Toast.makeText(getBaseContext(), "Selected: " + TextUtils.join(", ", selectedCodes), Toast.LENGTH_LONG).show();
+
+					// send to next activity
+					Intent sendToSelectMetric = new Intent(getBaseContext(), SelectMetric.class);
+					startActivity(sendToSelectMetric);
 				} else {
 					Toast.makeText(getBaseContext(), "You did not select any countries", Toast.LENGTH_LONG).show();
 				}
