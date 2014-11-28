@@ -12,7 +12,7 @@ public class SelectMetric extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		super.setTitle("Select a Metric");
+		super.setTitle(R.string.select_a_metric);
 		setContentView(R.layout.metrics);
 		GridView gridView = (GridView) findViewById(R.id.metric_grid_view);
 
