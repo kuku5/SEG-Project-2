@@ -69,6 +69,15 @@ public class MetricListAdapter extends BaseAdapter {
 		// set text of the button
 		b.setText(m.getName());
 
+		// set the button
+		if (m.getIconId() > 0) {
+			// set an icon
+			b.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.flag_unknown, 0, 0);
+		} else {
+			// default icon
+			b.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.flag_unknown, 0, 0);
+		}
+
 		// return view
 		return view;
 	}
