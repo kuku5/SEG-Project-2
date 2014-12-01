@@ -20,10 +20,10 @@
 			android:name=".activities.BuildOwn"
 			android:theme="@style/app_theme"/>
 		<activity
-			android:name=".activities.Countries"
+			android:name=".activities.SelectCountry"
 			android:theme="@style/app_theme"/>
 		<activity
-			android:name=".activities.MetricSelection"
+			android:name=".activities.SelectMetric"
 			android:theme="@style/app_theme"/>
 		<activity
 			android:name=".activities.NetworkTest"

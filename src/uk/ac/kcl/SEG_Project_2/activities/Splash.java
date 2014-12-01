@@ -18,7 +18,7 @@ public class Splash extends Activity {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				startActivity(new Intent(getBaseContext(), Countries.class));
+				startActivity(new Intent(getBaseContext(), SelectCountry.class));
 			}
 		};
 		timer.start();
