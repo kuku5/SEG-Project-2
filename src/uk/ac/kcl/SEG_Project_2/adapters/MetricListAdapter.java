@@ -1,15 +1,14 @@
 package uk.ac.kcl.SEG_Project_2.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import uk.ac.kcl.SEG_Project_2.R;
+import uk.ac.kcl.SEG_Project_2.activities.SelectMetric;
 import uk.ac.kcl.SEG_Project_2.constants.Utils;
 import uk.ac.kcl.SEG_Project_2.data.Metric;
 
@@ -18,11 +17,11 @@ import java.util.ArrayList;
 public class MetricListAdapter extends BaseAdapter {
 
 	private ArrayList<Metric> metrics;
-	private Activity activity;
+	private SelectMetric activity;
 	private Context context;
 	private LayoutInflater inflater;
 
-	public MetricListAdapter(Activity activity, ArrayList<Metric> metrics) {
+	public MetricListAdapter(SelectMetric activity, ArrayList<Metric> metrics) {
 		this.activity = activity;
 		this.context = activity.getBaseContext();
 		this.inflater = LayoutInflater.from(context);
@@ -94,6 +93,12 @@ public class MetricListAdapter extends BaseAdapter {
 			public boolean onLongClick(View v) {
 				Utils.createInfoDialog(activity, m.getName(), m.getInfo());
 				return false;
+			}
+		});
+		view.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				activity.onMetricSelect(m);
 			}
 		});
 
