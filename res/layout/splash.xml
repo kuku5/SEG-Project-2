@@ -1,12 +1,106 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:gravity="center_vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/splash" />
+	<!-- TODO: replace with real logo -->
+	<Button
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Logo Placeholder"
+		android:layout_gravity="center"
+		android:gravity="center"
+		android:layout_marginTop="10dp"/>
+
+	<GridLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:columnCount="2"
+		android:rowCount="3"
+		android:layout_marginTop="10dp"
+		android:layout_marginBottom="10dp">
+
+		<Button
+			android:background="@drawable/circle"
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:text="@string/splash_num_1"
+			android:layout_marginTop="20dp"
+			android:layout_marginBottom="20dp"
+			android:layout_marginRight="10dp"
+			android:textColor="#ffffffff"
+			android:textStyle="italic|bold"
+			android:textSize="25sp"
+			android:enabled="false"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/splash_item_1"
+			android:layout_gravity="center_vertical"
+			android:textColor="#ff000000"
+			android:textSize="25sp"
+			android:layout_marginRight="40dp"
+			android:textStyle="italic"/>
+
+		<Button
+			android:background="@drawable/circle"
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:text="@string/splash_num_2"
+			android:layout_marginTop="20dp"
+			android:layout_marginBottom="20dp"
+			android:layout_marginRight="10dp"
+			android:textColor="#ffffffff"
+			android:textStyle="italic|bold"
+			android:textSize="25sp"
+			android:enabled="false"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/splash_item_2"
+			android:layout_gravity="center_vertical"
+			android:textColor="#ff000000"
+			android:textSize="25sp"
+			android:textStyle="italic"/>
+
+		<Button
+			android:background="@drawable/circle"
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:text="@string/splash_num_3"
+			android:layout_marginTop="20dp"
+			android:layout_marginBottom="20dp"
+			android:layout_marginRight="10dp"
+			android:textColor="#ffffffff"
+			android:textStyle="italic|bold"
+			android:textSize="25sp"
+			android:enabled="false"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/splash_item_3"
+			android:layout_gravity="center_vertical"
+			android:textColor="#ff000000"
+			android:textSize="25sp"
+			android:textStyle="italic"/>
+
+	</GridLayout>
+
+	<Button
+		android:id="@+id/splash_continue"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/splash_continue"
+		android:layout_gravity="center"
+		android:gravity="center"
+		android:padding="10dp"
+		android:textColor="#ff000000"
+		android:textStyle="bold"/>
 
 </LinearLayout>
