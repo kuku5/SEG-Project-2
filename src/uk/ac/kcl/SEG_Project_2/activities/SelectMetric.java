@@ -8,7 +8,7 @@ import android.widget.Toast;
 import uk.ac.kcl.SEG_Project_2.R;
 import uk.ac.kcl.SEG_Project_2.adapters.MetricListAdapter;
 import uk.ac.kcl.SEG_Project_2.data.Country;
-import uk.ac.kcl.SEG_Project_2.data.MetricList;
+import uk.ac.kcl.SEG_Project_2.constants.MetricList;
 
 import java.util.ArrayList;
 
@@ -33,7 +33,7 @@ public class SelectMetric extends Activity {
 		Toast.makeText(getBaseContext(), "Selected: " + TextUtils.join(", ", selectedNames), Toast.LENGTH_LONG).show();
 
 		// set up adapter for grid view
-		MetricListAdapter adapter = new MetricListAdapter(getBaseContext(), MetricList.getMetrics());
+		MetricListAdapter adapter = new MetricListAdapter(SelectMetric.this, MetricList.getMetrics());
 		gridView.setAdapter(adapter);
 	}
 

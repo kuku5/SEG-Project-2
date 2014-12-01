@@ -10,6 +10,7 @@
 
 	<!-- METRICS -->
 	<string name="select_a_metric">Select a Metric</string>
+	<string name="metric_long_press_hint">Hint: press and hold a metric for more information</string>
 
 
     <string name="app_name">SEG2</string>
