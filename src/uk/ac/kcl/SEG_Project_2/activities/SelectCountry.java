@@ -140,6 +140,7 @@ public class SelectCountry extends Activity {
 			@Override
 			public void onFail() {
 				Toast.makeText(apiRequest.getContext(), "Failed to get country list", Toast.LENGTH_LONG).show();
+				startActivity(new Intent(getBaseContext(), Splash.class));
 				finish();
 			}
 		});
