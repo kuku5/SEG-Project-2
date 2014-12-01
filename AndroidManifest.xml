@@ -17,9 +17,6 @@
 		android:allowBackup="true">
 
 		<activity
-			android:name=".activities.BuildOwn"
-			android:theme="@style/app_theme"/>
-		<activity
 			android:name=".activities.SelectCountry"
 			android:theme="@style/app_theme"/>
 		<activity
@@ -36,9 +33,6 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
-		<activity
-			android:name=".activities.WhichGas"
-			android:theme="@style/app_theme"/>
 
 	</application>
 </manifest>
