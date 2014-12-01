@@ -12,6 +12,13 @@
 	<string name="select_a_metric">Select a Metric</string>
 	<string name="metric_long_press_hint">Hint: press and hold a metric for more information</string>
 
+	<!-- SPLASH -->
+	<string name="splash_num_1">1</string>
+	<string name="splash_num_2">2</string>
+	<string name="splash_num_3">3</string>
+	<string name="splash_item_1">Select countries</string>
+	<string name="splash_item_2">Select a metric</string>
+	<string name="splash_item_3">See your data</string>
 
     <string name="app_name">SEG2</string>
     <string name="action_settings">Settings</string>
