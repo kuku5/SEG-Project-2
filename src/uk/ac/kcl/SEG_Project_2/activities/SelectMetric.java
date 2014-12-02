@@ -34,8 +34,7 @@ public class SelectMetric extends Activity {
 		gridView.setAdapter(adapter);
 	}
 
-	public void onMetricSelect(Metric m) {
-		// TODO: Bryan & Misty, change null to the class of whatever activity you create
+	public void onMetricSelect(Metric m, int position) {
 		Intent sendToData = new Intent(getBaseContext(), null);
 		sendToData.putParcelableArrayListExtra("countries", selectedCountries);
 		sendToData.putExtra("metric", m);

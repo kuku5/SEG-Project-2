@@ -1,6 +1,5 @@
 package uk.ac.kcl.SEG_Project_2.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +17,11 @@ public class MetricListAdapter extends BaseAdapter {
 
 	private ArrayList<Metric> metrics;
 	private SelectMetric activity;
-	private Context context;
 	private LayoutInflater inflater;
 
 	public MetricListAdapter(SelectMetric activity, ArrayList<Metric> metrics) {
 		this.activity = activity;
-		this.context = activity.getBaseContext();
-		this.inflater = LayoutInflater.from(context);
+		this.inflater = LayoutInflater.from(activity.getBaseContext());
 		this.metrics = metrics;
 	}
 
@@ -44,7 +41,7 @@ public class MetricListAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		// children in each cell
 		ImageView i;
 		TextView t;
@@ -98,7 +95,7 @@ public class MetricListAdapter extends BaseAdapter {
 		view.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				activity.onMetricSelect(m);
+				activity.onMetricSelect(m, position);
 			}
 		});
 
