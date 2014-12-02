@@ -35,9 +35,10 @@ public class SelectMetric extends Activity {
 	}
 
 	public void onMetricSelect(Metric m, int position) {
-		Intent sendToData = new Intent(getBaseContext(), null);
+		Intent sendToData = new Intent(getBaseContext(), SelectGraphs.class);
 		sendToData.putParcelableArrayListExtra("countries", selectedCountries);
 		sendToData.putExtra("metric", m);
+		sendToData.putExtra("metric_position", position);
 		// TODO: Replace with real info from user input
 		sendToData.putExtra("startMonth", 1);
 		sendToData.putExtra("startYear", 2010);
