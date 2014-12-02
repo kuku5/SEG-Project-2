@@ -179,7 +179,7 @@ public class WorldBankApiRequest implements ApiRequest {
 			String dateSegment = "";
 			if (startYear != 0 && endYear != 0) {
 				if (startMonth != 0 && endMonth != 0) {
-					dateSegment = "&date=" + startYear + "M" + startMonth + ":" + endYear + "M" + endMonth;
+					dateSegment = "&date=" + startYear + "M" + (startMonth < 10 ? "0" + startMonth : startMonth) + ":" + endYear + "M" + (endMonth < 10 ? "0" + endMonth : endMonth);
 				} else {
 					dateSegment = "&date=" + startYear + ":" + endYear;
 				}

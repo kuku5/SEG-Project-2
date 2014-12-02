@@ -1,52 +1,93 @@
 package uk.ac.kcl.SEG_Project_2.activities;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.Spinner;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.*;
-import com.github.mikephil.charting.utils.ColorTemplate;
-import uk.ac.kcl.SEG_Project_2.R;
+import android.util.Log;
+import android.util.Pair;
+import org.json.JSONException;
+import org.json.JSONObject;
+import uk.ac.kcl.SEG_Project_2.constants.C;
+import uk.ac.kcl.SEG_Project_2.constants.MetricList;
+import uk.ac.kcl.SEG_Project_2.data.ApiRequest;
 import uk.ac.kcl.SEG_Project_2.data.Country;
+import uk.ac.kcl.SEG_Project_2.data.Metric;
 import uk.ac.kcl.SEG_Project_2.data.WorldBankApiRequest;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class SelectGraphs extends Activity {
 
-	public ArrayList<String> xVals;
+	/*public ArrayList<String> xVals;
 	ArrayList<LineDataSet> lineDataSets;
 	ArrayList<BarDataSet> barDataSets;
 	ArrayList<PieDataSet> pieDataSets;
 
 	Spinner spinner;
-	BarChart barchart;
-	String[] countryArray;
+	BarChart barchart;*/
+
+	// data collection fields
+	private int indicatorsToCollect = 0;
+	private int indicatorsCollected = 0;
+	private ArrayList<ArrayList<JSONObject>> indicatorData;
+	private boolean failed = false;
+	private boolean onFailDone = false;
+
+	// useful data set
+	private Metric selectedMetric;
+	private int selectedMetricPosition;
+	private ArrayList<String> selectedCountryNames = new ArrayList<String>();
+	private List<String> selectedIndicatorCodes;
+	private HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>> dataset = new HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// TODO: initially setContentView() to a view with a loading message
 
+		// get info from previous activity
 		Bundle extras = getIntent().getExtras();
 		ArrayList<Country> selectedCountries = extras.getParcelableArrayList("countries");
-		String selectedMetric = extras.getParcelable("metric");
-		getCountries(selectedCountries);
+		selectedMetricPosition = extras.getInt("metric_position");
+		selectedMetric = MetricList.getMetrics().get(selectedMetricPosition);
+		String[] selectedCountryCodes = new String[selectedCountries.size()];
+		for (int i = 0; i < selectedCountries.size(); i++) {
+			selectedCountryCodes[i] = selectedCountries.get(i).getId();
+			selectedCountryNames.add(selectedCountries.get(i).getName());
+		}
 		int startMonth = extras.getInt("startMonth");
 		int startYear = extras.getInt("startYear");
 		int endMonth = extras.getInt("endMonth");
 		int endYear = extras.getInt("endYear");
 
-		WorldBankApiRequest request = new WorldBankApiRequest(SelectGraphs.this);
-		request.setDateRange(startMonth, startYear, endMonth, endYear);
-		request.setCountries(countryArray);
-		request.setIndicator(selectedMetric);
+		// build request(s)
+		selectedIndicatorCodes = Arrays.asList(selectedMetric.getIndicators());
+		indicatorsToCollect = selectedIndicatorCodes.size();
+		indicatorData = new ArrayList<ArrayList<JSONObject>>();
+		for (String i : selectedIndicatorCodes) {
+			// build a request
+			final WorldBankApiRequest request = new WorldBankApiRequest(SelectGraphs.this);
+			request.setDateRange(startMonth, startYear, endMonth, endYear);
+			request.setCountries(selectedCountryCodes);
+			request.setIndicator(i);
+			request.setOnFail(new ApiRequest.OnFailListener() {
+				@Override
+				public void onFail() {
+					failed = true;
+					onDataCollectionFailed();
+				}
+			});
+			request.setOnComplete(new ApiRequest.OnCompleteListener() {
+				@Override
+				public void onComplete() {
+					++indicatorsCollected;
+					indicatorData.add((ArrayList<JSONObject>) request.getResult());
+					checkAllDataCollected();
+				}
+			});
+			request.execute();
+		}
 
-		if (selectedMetric.equals("Gas Emissions")) {
+		/*if (selectedMetric.equals("Gas Emissions")) {
 			setContentView(R.layout.activity_main_barchart);
 			//setContentView(R.layout.activity_main_piechart);
 		}
@@ -65,21 +106,82 @@ public class SelectGraphs extends Activity {
 
 		createLineChart();
 		createBarChart();
-		createPieChart();
-
+		createPieChart();*/
 	}
 
-	public String[] getCountries(ArrayList<Country> list) {
+	private void checkAllDataCollected() {
+		if (failed) return;
+		if (indicatorsCollected == indicatorsToCollect) {
+			for (ArrayList<JSONObject> a : indicatorData) {
+				for (JSONObject o : a) {
+					// parse collected date
+					try {
+						String value = o.get("value").toString();
+						String date = o.get("date").toString();
+						String country = o.getJSONObject("country").get("value").toString();
+						String indicator = o.getJSONObject("indicator").get("id").toString();
 
-		countryArray = new String[list.size()];
-		for (int i = 0; i <= list.size(); i++) {
-			countryArray[i] = list.get(i).getId();
+						// create country map
+						if (!dataset.containsKey(country)) {
+							dataset.put(country, new HashMap<String, ArrayList<Pair<String, String>>>());
+						}
+
+						// create indicator map
+						if (!dataset.get(country).containsKey(indicator)) {
+							dataset.get(country).put(indicator, new ArrayList<Pair<String, String>>());
+						}
+
+						// place values
+						if (value != null && !value.equals("null")) {
+							dataset.get(country).get(indicator).add(new Pair<String, String>(date, value));
+						}
+					} catch (JSONException e) {
+						failed = true;
+						onDataCollectionFailed();
+						return;
+					}
+				}
+			}
+
+			// finished collection
+			onDataCollectionFinished();
 		}
-
-		return countryArray;
 	}
 
-	@Override
+	private void onDataCollectionFailed() {
+		// only run once
+		if (!failed || onFailDone) return;
+		onFailDone = true;
+
+		// TODO: use setContentView() to a view with an error message and button to go back
+	}
+
+	private void onDataCollectionFinished() {
+		// loop countries
+		for (String c : selectedCountryNames) {
+			// loop indicators
+			for (String i : selectedIndicatorCodes) {
+				// sort values
+				ArrayList<Pair<String, String>> values = dataset.get(c).get(i);
+				Collections.sort(values, new Comparator<Pair<String, String>>() {
+					@Override
+					public int compare(Pair<String, String> lhs, Pair<String, String> rhs) {
+						return lhs.first.compareTo(rhs.first);
+					}
+				});
+
+				// loop values
+				for (Pair<String, String> r : values) {
+					// TODO: do something useful with the data
+					// TODO: use setContentView() to display your graph
+					// you can use selectedMetricPosition or selectedMetric to decide what type of graph to show
+					Log.d(C.LOG_TAG, c + ", " + i + ": " + r.first + ": " + r.second);
+				}
+			}
+		}
+	}
+
+	/*@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
@@ -269,6 +371,6 @@ public class SelectGraphs extends Activity {
 		pieChart.highlightValues(null);
 
 		pieChart.invalidate();
-	}
+	}*/
 
 }

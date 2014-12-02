@@ -95,7 +95,7 @@ public class MetricListAdapter extends BaseAdapter {
 		view.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				activity.onMetricSelect(m, position);
+				activity.onMetricSelect(position);
 			}
 		});
 

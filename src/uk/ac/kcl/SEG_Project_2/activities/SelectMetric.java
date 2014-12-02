@@ -34,10 +34,9 @@ public class SelectMetric extends Activity {
 		gridView.setAdapter(adapter);
 	}
 
-	public void onMetricSelect(Metric m, int position) {
+	public void onMetricSelect(int position) {
 		Intent sendToData = new Intent(getBaseContext(), SelectGraphs.class);
 		sendToData.putParcelableArrayListExtra("countries", selectedCountries);
-		sendToData.putExtra("metric", m);
 		sendToData.putExtra("metric_position", position);
 		// TODO: Replace with real info from user input
 		sendToData.putExtra("startMonth", 1);
