@@ -100,7 +100,8 @@
 		android:layout_gravity="center"
 		android:gravity="center"
 		android:padding="10dp"
-		android:textColor="#ff000000"
+		android:background="@drawable/green_button_background"
+		android:textColor="#ffffffff"
 		android:textStyle="bold"/>
 
 </LinearLayout>
