@@ -39,9 +39,7 @@ public class SelectMetric extends Activity {
 		sendToData.putParcelableArrayListExtra("countries", selectedCountries);
 		sendToData.putExtra("metric_position", position);
 		// TODO: Replace with real info from user input
-		sendToData.putExtra("startMonth", 1);
-		sendToData.putExtra("startYear", 2010);
-		sendToData.putExtra("endMonth", 12);
+		sendToData.putExtra("startYear", 1990);
 		sendToData.putExtra("endYear", 2014);
 		startActivity(sendToData);
 	}

@@ -1,12 +1,16 @@
 package uk.ac.kcl.SEG_Project_2.activities;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import org.json.JSONException;
 import org.json.JSONObject;
-import uk.ac.kcl.SEG_Project_2.constants.C;
+import uk.ac.kcl.SEG_Project_2.R;
 import uk.ac.kcl.SEG_Project_2.constants.MetricList;
 import uk.ac.kcl.SEG_Project_2.data.ApiRequest;
 import uk.ac.kcl.SEG_Project_2.data.Country;
@@ -54,9 +58,7 @@ public class SelectGraphs extends Activity {
 			selectedCountryCodes[i] = selectedCountries.get(i).getId();
 			selectedCountryNames.add(selectedCountries.get(i).getName());
 		}
-		int startMonth = extras.getInt("startMonth");
 		int startYear = extras.getInt("startYear");
-		int endMonth = extras.getInt("endMonth");
 		int endYear = extras.getInt("endYear");
 
 		// build request(s)
@@ -66,7 +68,7 @@ public class SelectGraphs extends Activity {
 		for (String i : selectedIndicatorCodes) {
 			// build a request
 			final WorldBankApiRequest request = new WorldBankApiRequest(SelectGraphs.this);
-			request.setDateRange(startMonth, startYear, endMonth, endYear);
+			request.setDateRange(startYear, endYear);
 			request.setCountries(selectedCountryCodes);
 			request.setIndicator(i);
 			request.setOnFail(new ApiRequest.OnFailListener() {
@@ -157,6 +159,9 @@ public class SelectGraphs extends Activity {
 	}
 
 	private void onDataCollectionFinished() {
+		// list of x values (no duplicates)
+		HashSet<String> xValuesRaw = new HashSet<String>();
+
 		// loop countries
 		for (String c : selectedCountryNames) {
 			// loop indicators
@@ -172,13 +177,62 @@ public class SelectGraphs extends Activity {
 
 				// loop values
 				for (Pair<String, String> r : values) {
-					// TODO: do something useful with the data
-					// TODO: use setContentView() to display your graph
-					// you can use selectedMetricPosition or selectedMetric to decide what type of graph to show
-					Log.d(C.LOG_TAG, c + ", " + i + ": " + r.first + ": " + r.second);
+					xValuesRaw.add(r.first);
 				}
 			}
 		}
+
+		// sort xValues
+		ArrayList<String> xValues = new ArrayList<String>(xValuesRaw.size());
+		xValues.addAll(xValuesRaw);
+		Collections.sort(xValues);
+
+		// start building datasets
+		HashMap<String, ArrayList<Entry>> datasets = new HashMap<String, ArrayList<Entry>>();
+
+		// loop countries
+		for (String c : selectedCountryNames) {
+			// loop indicators
+			for (String i : selectedIndicatorCodes) {
+				// create an array to store
+				datasets.put(c + "##" + i, new ArrayList<Entry>());
+
+				// loop xValues, and insert values where they exist
+				for (int x = 0; x < xValues.size(); x++) {
+					String xVal = xValues.get(x);
+					// loop values
+					ArrayList<Pair<String, String>> values = dataset.get(c).get(i);
+					for (Pair<String, String> r : values) {
+						if (r.first.equals(xVal)) {
+							try {
+								// insert into dataset
+								datasets.get(c + "##" + i).add(new Entry(Float.parseFloat(r.second), x));
+							} catch (NumberFormatException e) {
+								// don't add
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// show data
+		setContentView(R.layout.activity_main_linechart);
+		LineChart lineChart = (LineChart) findViewById(R.id.lineChart);
+		ArrayList<LineDataSet> sets = new ArrayList<LineDataSet>();
+		int col = 0;
+		int[] cols = new int[]{Color.RED, Color.BLUE, Color.GREEN, Color.MAGENTA};
+		for (Map.Entry<String, ArrayList<Entry>> e : datasets.entrySet()) {
+			if (e == null || e.getValue() == null || e.getKey() == null) continue;
+			LineDataSet l = new LineDataSet(e.getValue(), e.getKey());
+			l.setColor(cols[col % 4]);
+			l.setLineWidth(2f);
+			sets.add(l);
+			++col;
+		}
+		LineData data = new LineData(xValues, sets);
+		lineChart.setDrawYValues(false);
+		lineChart.setData(data);
 	}
 
 	/*@Override

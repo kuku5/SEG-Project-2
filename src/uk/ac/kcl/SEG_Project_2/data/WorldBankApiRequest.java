@@ -31,9 +31,7 @@ public class WorldBankApiRequest implements ApiRequest {
 	// request structure fields
 	private String indicator = "";
 	private List<String> countries = null;
-	private int startMonth = 0;
 	private int startYear = 0;
-	private int endMonth = 0;
 	private int endYear = 0;
 	private Frequency frequency = Frequency.YEARLY;
 	private boolean forceFresh = false;
@@ -70,10 +68,8 @@ public class WorldBankApiRequest implements ApiRequest {
 	}
 
 	@Override
-	public void setDateRange(int startMonth, int startYear, int endMonth, int endYear) {
-		this.startMonth = startMonth;
+	public void setDateRange(int startYear, int endYear) {
 		this.startYear = startYear;
-		this.endMonth = endMonth;
 		this.endYear = endYear;
 	}
 
@@ -107,7 +103,7 @@ public class WorldBankApiRequest implements ApiRequest {
 		}
 
 		// create hash
-		return Utils.createSHA256(indicator + countrySegment + startMonth + startYear + endMonth + endYear + frequency.toString());
+		return Utils.createSHA256(indicator + countrySegment + startYear + endYear + frequency.toString());
 	}
 
 	// set handlers
@@ -178,13 +174,10 @@ public class WorldBankApiRequest implements ApiRequest {
 			if (frequency == Frequency.MONTHLY) frequencySegment = "M";
 			String dateSegment = "";
 			if (startYear != 0 && endYear != 0) {
-				if (startMonth != 0 && endMonth != 0) {
-					dateSegment = "&date=" + startYear + "M" + (startMonth < 10 ? "0" + startMonth : startMonth) + ":" + endYear + "M" + (endMonth < 10 ? "0" + endMonth : endMonth);
-				} else {
-					dateSegment = "&date=" + startYear + ":" + endYear;
-				}
+				dateSegment = "&date=" + startYear + ":" + endYear;
 			}
 			compiledUri = String.format(C.API_URI_FORMAT, countriesSegment, indicator, frequencySegment, dateSegment);
+			Log.d(C.LOG_TAG, "URI: " + compiledUri);
 		}
 
 		// build and execute the request on a thread
