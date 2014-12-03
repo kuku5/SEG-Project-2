@@ -6,12 +6,14 @@ public class Metric {
 	private String info;
 	private int iconId;
 	private String[] indicators;
+	private int graphType;
 
-	public Metric(String name, String info, int iconId, String[] indicators) {
+	public Metric(String name, String info, int iconId, String[] indicators, int graphType) {
 		this.name = name;
 		this.info = info;
 		this.iconId = iconId;
 		this.indicators = indicators;
+		this.graphType = graphType;
 	}
 
 	public String getName() {
@@ -30,4 +32,7 @@ public class Metric {
 		return indicators;
 	}
 
+	public int getGraphType() {
+		return graphType;
+	}
 }

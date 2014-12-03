@@ -3,13 +3,12 @@ package uk.ac.kcl.SEG_Project_2.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Pair;
+import android.view.View;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import uk.ac.kcl.SEG_Project_2.R;
@@ -31,6 +30,7 @@ public class DataDisplay extends Activity {
 	private boolean onFailDone = false;
 	private ArrayList<String> selectedCountryNames = new ArrayList<String>();
 	private List<String> selectedIndicatorCodes;
+	private int graphType = 1;
 	private HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>> dataset = new HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>>();
 
 	@Override
@@ -43,6 +43,7 @@ public class DataDisplay extends Activity {
 		ArrayList<Country> selectedCountries = extras.getParcelableArrayList("countries");
 		int selectedMetricPosition = extras.getInt("metric_position");
 		Metric selectedMetric = MetricList.getMetrics().get(selectedMetricPosition);
+		graphType = selectedMetric.getGraphType();
 		String[] selectedCountryCodes = new String[selectedCountries.size()];
 		for (int i = 0; i < selectedCountries.size(); i++) {
 			selectedCountryCodes[i] = selectedCountries.get(i).getId();
@@ -167,14 +168,14 @@ public class DataDisplay extends Activity {
 		Collections.sort(xValues);
 
 		// start building datasets
-		HashMap<String, ArrayList<Entry>> datasets = new HashMap<String, ArrayList<Entry>>();
+		HashMap<String, ArrayList<Object>> datasets = new HashMap<String, ArrayList<Object>>();
 
 		// loop countries
 		for (String c : selectedCountryNames) {
 			// loop indicators
 			for (String i : selectedIndicatorCodes) {
 				// create an array to store
-				datasets.put(c + "##" + i, new ArrayList<Entry>());
+				datasets.put(c + "##" + i, new ArrayList<Object>());
 
 				// loop xValues, and insert values where they exist
 				for (int x = 0; x < xValues.size(); x++) {
@@ -185,7 +186,14 @@ public class DataDisplay extends Activity {
 						if (r.first.equals(xVal)) {
 							try {
 								// insert into dataset
-								datasets.get(c + "##" + i).add(new Entry(Float.parseFloat(r.second), x));
+								switch (graphType) {
+									case MetricList.BAR_CHART:
+										datasets.get(c + "##" + i).add(new BarEntry(Float.parseFloat(r.second), x));
+										break;
+									default:
+										datasets.get(c + "##" + i).add(new Entry(Float.parseFloat(r.second), x));
+										break;
+								}
 							} catch (NumberFormatException e) {
 								// don't add
 							}
@@ -195,23 +203,59 @@ public class DataDisplay extends Activity {
 			}
 		}
 
-		// show data
-		setContentView(R.layout.activity_main_linechart);
-		LineChart lineChart = (LineChart) findViewById(R.id.lineChart);
-		ArrayList<LineDataSet> sets = new ArrayList<LineDataSet>();
-		int col = 0;
-		int[] cols = new int[]{Color.RED, Color.BLUE, Color.GREEN, Color.MAGENTA};
-		for (Map.Entry<String, ArrayList<Entry>> e : datasets.entrySet()) {
-			if (e == null || e.getValue() == null || e.getKey() == null) continue;
-			LineDataSet l = new LineDataSet(e.getValue(), e.getKey());
-			l.setColor(cols[col % 4]);
-			l.setLineWidth(2f);
-			sets.add(l);
-			++col;
+		// switch to data display
+		setContentView(R.layout.data_display);
+
+		// turn on right type of graph
+		View chart;
+		switch (graphType) {
+			case MetricList.BAR_CHART:
+				chart = findViewById(R.id.barChart);
+				break;
+			default:
+				chart = findViewById(R.id.lineChart);
+				break;
 		}
-		LineData data = new LineData(xValues, sets);
-		lineChart.setDrawYValues(false);
-		lineChart.setData(data);
+		chart.setVisibility(View.VISIBLE);
+
+		// create data sets
+		ArrayList<Object> sets = new ArrayList<Object>();
+		for (Map.Entry<String, ArrayList<Object>> e : datasets.entrySet()) {
+			Object individualSet;
+			switch (graphType) {
+				case MetricList.BAR_CHART:
+					ArrayList<BarEntry> barEntries = new ArrayList<BarEntry>();
+					for (Object o : e.getValue()) {
+						barEntries.add((BarEntry) o);
+					}
+					individualSet = new BarDataSet(barEntries, e.getKey());
+					sets.add(individualSet);
+					break;
+				default:
+					ArrayList<Entry> lineEntries = new ArrayList<Entry>();
+					for (Object o : e.getValue()) {
+						lineEntries.add((Entry) o);
+					}
+					individualSet = new LineDataSet(lineEntries, e.getKey());
+					sets.add(individualSet);
+					break;
+			}
+		}
+
+		switch (graphType) {
+			case MetricList.BAR_CHART:
+				ArrayList<BarDataSet> barDataSets = new ArrayList<BarDataSet>();
+				for (Object o : sets) barDataSets.add((BarDataSet) o);
+				BarData barData = new BarData(xValues, barDataSets);
+				((BarChart) chart).setData(barData);
+				break;
+			default:
+				ArrayList<LineDataSet> lineDataSets = new ArrayList<LineDataSet>();
+				for (Object o : sets) lineDataSets.add((LineDataSet) o);
+				LineData lineData = new LineData(xValues, lineDataSets);
+				((LineChart) chart).setData(lineData);
+				break;
+		}
 	}
 
 }

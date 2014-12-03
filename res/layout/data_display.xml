@@ -8,7 +8,16 @@
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
 		android:layout_above="@+id/data_options_button"
-		android:layout_alignParentTop="true"/>
+		android:layout_alignParentTop="true"
+		android:visibility="gone"/>
+
+	<com.github.mikephil.charting.charts.BarChart
+		android:id="@+id/barChart"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:layout_above="@+id/data_options_button"
+		android:layout_alignParentTop="true"
+		android:visibility="gone"/>
 
 	<Button
 		android:id="@id/data_options_button"
