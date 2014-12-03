@@ -12,18 +12,35 @@ public class MetricList {
 	static {
 		metrics.add(0, new Metric(
 				"Gas Emissions",
-				"Some info about gas here...",
+				"This metric will display the greenhouse gas emissions for each country, grouped into CO2, methane, nitrous oxides and others.",
 				R.drawable.gases,
-				new String[] {
+				new String[]{
 						"EN.ATM.CO2E.KT",
 						"EN.ATM.METH.KT.CE",
 						"EN.ATM.NOXE.KT.CE",
 						"EN.ATM.GHGO.KT.CE"
 				}
 		));
-		//metrics.add(1, new Metric("Population", "Some info about population here...", R.drawable.population));
-		//metrics.add(2, new Metric("Deforestation", "Some info about tree hugging here...", R.drawable.tree));
-		//metrics.add(3, new Metric("Elec. Use", "Some info about electricity here...", R.drawable.electricity));
+		metrics.add(1, new Metric(
+				"Population",
+				"This metric will display the population sizes for each country selected.",
+				R.drawable.population,
+				new String[]{
+						"SP.POP.TOTL"
+				}));
+		metrics.add(2, new Metric(
+				"Deforestation",
+				"This metric will display the sum of forested areas that each country has.",
+				R.drawable.tree,
+				new String[]{
+						"AG.LND.FRST.K2"
+				}));
+		metrics.add(3, new Metric(
+				"Elec. Use", "This metric will display the electrical consumption of each country selected.",
+				R.drawable.electricity,
+				new String[]{
+						"EG.USE.ELEC.KH.PC"
+				}));
 	}
 
 	public static ArrayList<Metric> getMetrics() {
