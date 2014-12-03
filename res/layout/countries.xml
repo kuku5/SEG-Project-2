@@ -77,6 +77,10 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:layout_alignParentBottom="true"
+			android:layout_margin="5dp"
+			android:background="@drawable/green_button_background"
+			android:textColor="#ffffffff"
+			android:textStyle="bold"
 			android:text="@string/country_continue"/>
 
 	</RelativeLayout>

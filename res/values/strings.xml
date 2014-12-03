@@ -21,22 +21,7 @@
 	<string name="splash_item_3">See your data</string>
 	<string name="splash_continue">Continue…</string>
 
-    <string name="app_name">SEG2</string>
-    <string name="action_settings">Settings</string>
-    <string name="which_gas">Which Gasses?</string>
-    <string name="build_own">Which Metric?</string>
-    <string name="selection_mectric">Metric Selection</string>
-
-    <string-array name="list_gas_type">
-        <item>CO2</item>
-        <item>Methane</item>
-        <item>Nitrous</item>
-        <item>Other (HFC, PFC and SF6)</item>
-    </string-array>
-    <string-array name="list_metric_type">
-        <item>Metric 1</item>
-        <item>Metric 2</item>
-        <item>Metric 3</item>
-    </string-array>
+	<!-- GENERAL -->
+    <string name="app_name">TFA Data (Geography Edition)</string>
 
 </resources>
