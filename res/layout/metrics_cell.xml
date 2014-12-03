@@ -15,6 +15,7 @@
 		android:scaleType="fitCenter"
 		android:adjustViewBounds="true"
 		android:src="@drawable/unknown"
+		android:layout_margin="10dp"
 		android:layout_gravity="fill_horizontal|fill_vertical"/>
 
 	<TextView
