@@ -15,7 +15,7 @@ public class NetworkTest extends Activity {
 		final WorldBankApiRequest request = new WorldBankApiRequest(this);
 		request.setIndicator("SP.POP.TOTL");
 		request.setCountries("bra", "gbr");
-		request.setDateRange(0, 2000, 0, 2014);
+		request.setDateRange(2000, 2014);
 		request.setFrequency(ApiRequest.Frequency.YEARLY);
 		request.setOnProgressUpdate(new ApiRequest.OnProgressUpdateListener() {
 			@Override

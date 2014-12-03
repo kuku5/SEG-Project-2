@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+	<!-- DATA -->
+	<string name="loading_data">Loading data,\nPlease wait</string>
+	<string name="data_error_title">Error!</string>
+	<string name="data_error_body">An error occurred whilst loading data. Please try again.</string>
+	<string name="data_options">Options…</string>
+
 	<!-- COUNTRIES -->
     <string name="select_a_country">Select a Country</string>
 	<string name="loading_countries">Loading country list,\nPlease wait</string>

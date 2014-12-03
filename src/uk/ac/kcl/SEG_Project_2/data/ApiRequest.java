@@ -27,12 +27,10 @@ public interface ApiRequest {
 	/**
 	 * Set the date range that this request will fetch data for
 	 *
-	 * @param startMonth The month at the start of the date range (set to 0 to search year-only)
 	 * @param startYear  The year at the start of the date range
-	 * @param endMonth   The month at the end of the date range (set to 0 to search year-only)
 	 * @param endYear    The year at the end of the date range
 	 */
-	public void setDateRange(int startMonth, int startYear, int endMonth, int endYear);
+	public void setDateRange(int startYear, int endYear);
 
 	/**
 	 * Set the frequency of data that this query should fetch (may be ignored by the API

@@ -1,24 +1,19 @@
 package uk.ac.kcl.SEG_Project_2.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class Metric implements Parcelable{
+public class Metric {
 
 	private String name;
 	private String info;
 	private int iconId;
+	private String[] indicators;
+	private int graphType;
 
-	public Metric(String name, String info, int iconId) {
+	public Metric(String name, String info, int iconId, String[] indicators, int graphType) {
 		this.name = name;
 		this.info = info;
 		this.iconId = iconId;
-	}
-
-	public Metric(Parcel in) {
-		this.name = in.readString();
-		this.info = in.readString();
-		this.iconId = in.readInt();
+		this.indicators = indicators;
+		this.graphType = graphType;
 	}
 
 	public String getName() {
@@ -33,25 +28,11 @@ public class Metric implements Parcelable{
 		return iconId;
 	}
 
-	@Override
-	public int describeContents() {
-		return 0;
+	public String[] getIndicators() {
+		return indicators;
 	}
 
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(name);
-		dest.writeString(info);
-		dest.writeInt(iconId);
+	public int getGraphType() {
+		return graphType;
 	}
-
-	public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-		public Metric createFromParcel(Parcel in) {
-			return new Metric(in);
-		}
-
-		public Metric[] newArray(int size) {
-			return new Metric[size];
-		}
-	};
 }
