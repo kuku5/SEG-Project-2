@@ -177,7 +177,6 @@ public class WorldBankApiRequest implements ApiRequest {
 				dateSegment = "&date=" + startYear + ":" + endYear;
 			}
 			compiledUri = String.format(C.API_URI_FORMAT, countriesSegment, indicator, frequencySegment, dateSegment);
-			Log.d(C.LOG_TAG, "URI: " + compiledUri);
 		}
 
 		// build and execute the request on a thread

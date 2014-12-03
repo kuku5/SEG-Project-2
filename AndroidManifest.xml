@@ -20,7 +20,7 @@
 			android:name=".activities.SelectCountry"
 			android:theme="@style/app_theme"/>
 		<activity
-			android:name=".activities.SelectGraphs"
+			android:name=".activities.DataDisplay"
 			android:theme="@style/app_theme"/>
 		<activity
 			android:name=".activities.SelectMetric"

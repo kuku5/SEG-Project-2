@@ -1,6 +1,8 @@
 package uk.ac.kcl.SEG_Project_2.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Pair;
@@ -19,7 +21,7 @@ import uk.ac.kcl.SEG_Project_2.data.WorldBankApiRequest;
 
 import java.util.*;
 
-public class SelectGraphs extends Activity {
+public class DataDisplay extends Activity {
 
 	/*public ArrayList<String> xVals;
 	ArrayList<LineDataSet> lineDataSets;
@@ -35,10 +37,6 @@ public class SelectGraphs extends Activity {
 	private ArrayList<ArrayList<JSONObject>> indicatorData;
 	private boolean failed = false;
 	private boolean onFailDone = false;
-
-	// useful data set
-	private Metric selectedMetric;
-	private int selectedMetricPosition;
 	private ArrayList<String> selectedCountryNames = new ArrayList<String>();
 	private List<String> selectedIndicatorCodes;
 	private HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>> dataset = new HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>>();
@@ -46,13 +44,13 @@ public class SelectGraphs extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// TODO: initially setContentView() to a view with a loading message
+		setContentView(R.layout.data_loading);
 
 		// get info from previous activity
 		Bundle extras = getIntent().getExtras();
 		ArrayList<Country> selectedCountries = extras.getParcelableArrayList("countries");
-		selectedMetricPosition = extras.getInt("metric_position");
-		selectedMetric = MetricList.getMetrics().get(selectedMetricPosition);
+		int selectedMetricPosition = extras.getInt("metric_position");
+		Metric selectedMetric = MetricList.getMetrics().get(selectedMetricPosition);
 		String[] selectedCountryCodes = new String[selectedCountries.size()];
 		for (int i = 0; i < selectedCountries.size(); i++) {
 			selectedCountryCodes[i] = selectedCountries.get(i).getId();
@@ -67,7 +65,7 @@ public class SelectGraphs extends Activity {
 		indicatorData = new ArrayList<ArrayList<JSONObject>>();
 		for (String i : selectedIndicatorCodes) {
 			// build a request
-			final WorldBankApiRequest request = new WorldBankApiRequest(SelectGraphs.this);
+			final WorldBankApiRequest request = new WorldBankApiRequest(DataDisplay.this);
 			request.setDateRange(startYear, endYear);
 			request.setCountries(selectedCountryCodes);
 			request.setIndicator(i);
@@ -155,7 +153,17 @@ public class SelectGraphs extends Activity {
 		if (!failed || onFailDone) return;
 		onFailDone = true;
 
-		// TODO: use setContentView() to a view with an error message and button to go back
+		// alert
+		AlertDialog.Builder builder = new AlertDialog.Builder(DataDisplay.this);
+		builder.setTitle(R.string.data_error_title)
+				.setMessage(R.string.data_error_body)
+				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						DataDisplay.this.finish();
+					}
+				});
+		builder.create().show();
 	}
 
 	private void onDataCollectionFinished() {
