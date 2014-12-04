@@ -3,7 +3,9 @@ package uk.ac.kcl.SEG_Project_2.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -31,8 +33,12 @@ public class DataDisplay extends Activity {
 	private ArrayList<ArrayList<JSONObject>> indicatorData;
 	private boolean failed = false;
 	private boolean onFailDone = false;
+	private int fromYear;
+	private int toYear;
+	private ArrayList<Country> selectedCountries;
 	private ArrayList<String> selectedCountryNames = new ArrayList<String>();
 	private List<String[]> selectedIndicatorCodes;
+	private int selectedMetricPosition;
 	private Metric selectedMetric;
 	private int graphType = 1;
 	private HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>> dataset = new HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>>();
@@ -44,8 +50,8 @@ public class DataDisplay extends Activity {
 
 		// get info from previous activity
 		Bundle extras = getIntent().getExtras();
-		ArrayList<Country> selectedCountries = extras.getParcelableArrayList("countries");
-		int selectedMetricPosition = extras.getInt("metric_position");
+		selectedCountries = extras.getParcelableArrayList("countries");
+		selectedMetricPosition = extras.getInt("metric_position");
 		selectedMetric = MetricList.getMetrics().get(selectedMetricPosition);
 		graphType = selectedMetric.getGraphType();
 		String[] selectedCountryCodes = new String[selectedCountries.size()];
@@ -53,8 +59,8 @@ public class DataDisplay extends Activity {
 			selectedCountryCodes[i] = selectedCountries.get(i).getId();
 			selectedCountryNames.add(selectedCountries.get(i).getName());
 		}
-		int startYear = extras.getInt("startYear");
-		int endYear = extras.getInt("endYear");
+		fromYear = extras.getInt("startYear");
+		toYear = extras.getInt("endYear");
 
 		// build request(s)
 		selectedIndicatorCodes = Arrays.asList(selectedMetric.getIndicators());
@@ -63,7 +69,7 @@ public class DataDisplay extends Activity {
 		for (String[] i : selectedIndicatorCodes) {
 			// build a request
 			final WorldBankApiRequest request = new WorldBankApiRequest(DataDisplay.this);
-			request.setDateRange(startYear, endYear);
+			request.setDateRange(fromYear, toYear);
 			request.setCountries(selectedCountryCodes);
 			request.setIndicator(i[0]);
 			request.setOnFail(new ApiRequest.OnFailListener() {
@@ -308,6 +314,22 @@ public class DataDisplay extends Activity {
 				switch (which) {
 					case 0:
 						Utils.createInfoDialog(DataDisplay.this, selectedMetric.getName(), selectedMetric.getInfo());
+						break;
+					case 1:
+						Utils.createDatePickerDialog(DataDisplay.this, fromYear, toYear, new Utils.OnDatePickerDone() {
+							@Override
+							public void onDone(boolean cancelled, int fromYear, int toYear) {
+								if (!cancelled) {
+									final Intent sendToData = new Intent(getBaseContext(), DataDisplay.class);
+									sendToData.putParcelableArrayListExtra("countries", selectedCountries);
+									sendToData.putExtra("metric_position", selectedMetricPosition);
+									sendToData.putExtra("startYear", fromYear);
+									sendToData.putExtra("endYear", toYear);
+									DataDisplay.this.startActivity(sendToData);
+									DataDisplay.this.finish();
+								}
+							}
+						});
 						break;
 				}
 				dialog.dismiss();
