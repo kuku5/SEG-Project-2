@@ -34,12 +34,15 @@ public class DataDisplay extends Activity {
 	// views
 	private GridLayout legendDisplay;
 
-	// data collection fields
+	// collected data
 	private int indicatorsToCollect = 0;
 	private int indicatorsCollected = 0;
 	private ArrayList<ArrayList<JSONObject>> indicatorData;
 	private boolean failed = false;
 	private boolean onFailDone = false;
+	private HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>> dataset = new HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>>();
+
+	// data to collect
 	private int fromYear;
 	private int toYear;
 	private ArrayList<Country> selectedCountries;
@@ -48,7 +51,6 @@ public class DataDisplay extends Activity {
 	private int selectedMetricPosition;
 	private Metric selectedMetric;
 	private int graphType = 1;
-	private HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>> dataset = new HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +151,7 @@ public class DataDisplay extends Activity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(DataDisplay.this);
 		builder.setTitle(R.string.data_error_title)
 				.setMessage(R.string.data_error_body)
-				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						DataDisplay.this.finish();
@@ -161,24 +163,13 @@ public class DataDisplay extends Activity {
 	}
 
 	private void onDataCollectionFinished() {
-		// list of x values (no duplicates)
+		// list of x values (hashset, so no duplicates)
 		HashSet<String> xValuesRaw = new HashSet<String>();
 
-		// loop countries
+		// loop all data to build an unsorted lit of X values
 		for (String c : selectedCountryNames) {
-			// loop indicators
 			for (String[] i : selectedIndicatorCodes) {
-				// sort values
-				ArrayList<Pair<String, String>> values = dataset.get(c).get(i[0]);
-				Collections.sort(values, new Comparator<Pair<String, String>>() {
-					@Override
-					public int compare(Pair<String, String> lhs, Pair<String, String> rhs) {
-						return lhs.first.compareTo(rhs.first);
-					}
-				});
-
-				// loop values
-				for (Pair<String, String> r : values) {
+				for (Pair<String, String> r : dataset.get(c).get(i[0])) {
 					xValuesRaw.add(r.first);
 				}
 			}
@@ -196,15 +187,14 @@ public class DataDisplay extends Activity {
 		for (String c : selectedCountryNames) {
 			// loop indicators
 			for (String[] i : selectedIndicatorCodes) {
-				// create an array to store
+				// create an array to store the data in
 				datasets.put(c + C.LEGEND_DELIM + i[1], new ArrayList<Object>());
 
-				// loop xValues, and insert values where they exist
+				// loop xValues, and insert values into the above array where they exist
 				for (int x = 0; x < xValues.size(); x++) {
 					String xVal = xValues.get(x);
 					// loop values
-					ArrayList<Pair<String, String>> values = dataset.get(c).get(i[0]);
-					for (Pair<String, String> r : values) {
+					for (Pair<String, String> r : dataset.get(c).get(i[0])) {
 						if (r.first.equals(xVal)) {
 							try {
 								// insert into dataset
@@ -217,7 +207,7 @@ public class DataDisplay extends Activity {
 										break;
 								}
 							} catch (NumberFormatException e) {
-								// don't add
+								// I don't trust data from APIs ¬.¬
 							}
 						}
 					}
@@ -225,8 +215,8 @@ public class DataDisplay extends Activity {
 			}
 		}
 
-		// turn on right type of graph
-		setDataView();
+		// turn on the right type of graph
+		switchToDataView();
 		View chart;
 		switch (graphType) {
 			case MetricList.BAR_CHART:
@@ -245,7 +235,7 @@ public class DataDisplay extends Activity {
 		// for legends
 		ArrayList<Pair<String, Integer>> legends = new ArrayList<Pair<String, Integer>>();
 
-		// create data sets
+		// create data sets for the graph
 		ArrayList<Object> sets = new ArrayList<Object>();
 		for (Map.Entry<String, ArrayList<Object>> e : datasets.entrySet()) {
 			// pick a colour
@@ -258,21 +248,20 @@ public class DataDisplay extends Activity {
 			Object individualSet;
 			switch (graphType) {
 				case MetricList.BAR_CHART:
+					// create bar entries
 					ArrayList<BarEntry> barEntries = new ArrayList<BarEntry>();
-					for (Object o : e.getValue()) {
-						barEntries.add((BarEntry) o);
-					}
+					for (Object o : e.getValue()) barEntries.add((BarEntry) o);
 					individualSet = new BarDataSet(barEntries, e.getKey());
 
 					// format the bars
 					((BarDataSet) individualSet).setColor(c);
+					((BarDataSet) individualSet).setBarShadowColor(Color.TRANSPARENT);
 					sets.add(individualSet);
 					break;
 				default:
+					// create line entries
 					ArrayList<Entry> lineEntries = new ArrayList<Entry>();
-					for (Object o : e.getValue()) {
-						lineEntries.add((Entry) o);
-					}
+					for (Object o : e.getValue()) lineEntries.add((Entry) o);
 					individualSet = new LineDataSet(lineEntries, e.getKey());
 
 					// format the lines
@@ -294,22 +283,22 @@ public class DataDisplay extends Activity {
 				ArrayList<BarDataSet> barDataSets = new ArrayList<BarDataSet>();
 				for (Object o : sets) barDataSets.add((BarDataSet) o);
 				BarData barData = new BarData(xValues, barDataSets);
-				((BarChart) chart).setDrawYValues(false);
-				((BarChart) chart).setDescription("");
 				((BarChart) chart).setData(barData);
 				break;
 			default:
 				ArrayList<LineDataSet> lineDataSets = new ArrayList<LineDataSet>();
 				for (Object o : sets) lineDataSets.add((LineDataSet) o);
 				LineData lineData = new LineData(xValues, lineDataSets);
-				((LineChart) chart).setDrawYValues(false);
-				((LineChart) chart).setDescription("");
 				((LineChart) chart).setData(lineData);
 				break;
 		}
 
-		// create our own legend display
+		// generic options
+		((Chart) chart).setDrawYValues(false);
+		((Chart) chart).setDescription("");
 		((Chart) chart).setDrawLegend(false);
+
+		// create our own legend display
 		Collections.sort(legends, new Comparator<Pair<String, Integer>>() {
 			@Override
 			public int compare(Pair<String, Integer> lhs, Pair<String, Integer> rhs) {
@@ -335,7 +324,7 @@ public class DataDisplay extends Activity {
 		}
 	}
 
-	private void setDataView() {
+	private void switchToDataView() {
 		// switch to data display
 		setContentView(R.layout.data_display);
 
