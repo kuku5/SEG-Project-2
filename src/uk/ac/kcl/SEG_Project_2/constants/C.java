@@ -18,7 +18,8 @@ public class C {
 	public static final int MAX_COUNTRIES = 4;
 
 	/* GRAPHING */
-	public static int[] GRAPH_COLOURS = new int[]{
+	public static final String LEGEND_DELIM = " - ";
+	public static final int[] GRAPH_COLOURS = new int[]{
 			0x99ff0000,
 			0x99ffff00,
 			0x9900ff00,

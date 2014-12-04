@@ -194,7 +194,7 @@ public class DataDisplay extends Activity {
 			// loop indicators
 			for (String[] i : selectedIndicatorCodes) {
 				// create an array to store
-				datasets.put(c + ", " + i[1], new ArrayList<Object>());
+				datasets.put(c + C.LEGEND_DELIM + i[1], new ArrayList<Object>());
 
 				// loop xValues, and insert values where they exist
 				for (int x = 0; x < xValues.size(); x++) {
@@ -207,10 +207,10 @@ public class DataDisplay extends Activity {
 								// insert into dataset
 								switch (graphType) {
 									case MetricList.BAR_CHART:
-										datasets.get(c + ", " + i[1]).add(new BarEntry(Float.parseFloat(r.second), x));
+										datasets.get(c + C.LEGEND_DELIM + i[1]).add(new BarEntry(Float.parseFloat(r.second), x));
 										break;
 									default:
-										datasets.get(c + ", " + i[1]).add(new Entry(Float.parseFloat(r.second), x));
+										datasets.get(c + C.LEGEND_DELIM + i[1]).add(new Entry(Float.parseFloat(r.second), x));
 										break;
 								}
 							} catch (NumberFormatException e) {
