@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.widget.GridView;
 import uk.ac.kcl.SEG_Project_2.R;
 import uk.ac.kcl.SEG_Project_2.adapters.MetricListAdapter;
-import uk.ac.kcl.SEG_Project_2.constants.C;
 import uk.ac.kcl.SEG_Project_2.constants.MetricList;
 import uk.ac.kcl.SEG_Project_2.constants.Utils;
 import uk.ac.kcl.SEG_Project_2.data.Country;
@@ -39,8 +38,6 @@ public class SelectMetric extends Activity {
 		sendToData.putExtra("metric_position", position);
 		Utils.createDatePickerDialog(
 				SelectMetric.this,
-				C.MIN_YEAR,
-				C.MAX_YEAR,
 				new Utils.OnDatePickerDone() {
 					@Override
 					public void onDone(boolean cancelled, int fromYear, int toYear) {

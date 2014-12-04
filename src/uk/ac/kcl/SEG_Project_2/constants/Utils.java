@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.util.Log;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
@@ -41,7 +42,15 @@ public class Utils {
 		alert.show();
 	}
 
-	public static void createDatePickerDialog(final Activity activity, int fromYear, int toYear, final OnDatePickerDone onDone) {
+	public static void createDatePickerDialog(final Activity activity, final OnDatePickerDone onDone) {
+		// get default start and end years
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+		int from = prefs.getInt("latest_from_year", C.MIN_YEAR);
+		int to = prefs.getInt("latest_to_year", C.MAX_YEAR);
+		createDatePickerDialog(activity, onDone, from, to);
+	}
+
+	public static void createDatePickerDialog(final Activity activity, final OnDatePickerDone onDone, int fromYear, int toYear) {
 		final Dialog selectDates = new Dialog(activity);
 		selectDates.setTitle(R.string.date_picker_title);
 		selectDates.setContentView(R.layout.date_picker_dialog);
@@ -62,12 +71,22 @@ public class Utils {
 		btSet.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				// check dates
 				int from = npFrom.getValue();
 				int to = npTo.getValue();
 				if (from > to) {
 					Toast.makeText(activity.getBaseContext(), R.string.date_picker_invalid, Toast.LENGTH_SHORT).show();
 					return;
 				}
+
+				// save most recent dates
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+				SharedPreferences.Editor editor = prefs.edit();
+				editor.putInt("latest_from_year", from);
+				editor.putInt("latest_to_year", to);
+				editor.apply();
+
+				// done
 				onDone.onDone(false, from, to);
 				selectDates.cancel();
 			}

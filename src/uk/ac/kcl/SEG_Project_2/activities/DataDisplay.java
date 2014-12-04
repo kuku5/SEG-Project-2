@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -316,7 +315,7 @@ public class DataDisplay extends Activity {
 						Utils.createInfoDialog(DataDisplay.this, selectedMetric.getName(), selectedMetric.getInfo());
 						break;
 					case 1:
-						Utils.createDatePickerDialog(DataDisplay.this, fromYear, toYear, new Utils.OnDatePickerDone() {
+						Utils.createDatePickerDialog(DataDisplay.this, new Utils.OnDatePickerDone() {
 							@Override
 							public void onDone(boolean cancelled, int fromYear, int toYear) {
 								if (!cancelled) {
@@ -329,7 +328,7 @@ public class DataDisplay extends Activity {
 									DataDisplay.this.finish();
 								}
 							}
-						});
+						}, fromYear, toYear);
 						break;
 				}
 				dialog.dismiss();
