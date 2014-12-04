@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import uk.ac.kcl.SEG_Project_2.R;
 import uk.ac.kcl.SEG_Project_2.constants.C;
 import uk.ac.kcl.SEG_Project_2.constants.MetricList;
+import uk.ac.kcl.SEG_Project_2.constants.Utils;
 import uk.ac.kcl.SEG_Project_2.data.ApiRequest;
 import uk.ac.kcl.SEG_Project_2.data.Country;
 import uk.ac.kcl.SEG_Project_2.data.Metric;
@@ -32,6 +33,7 @@ public class DataDisplay extends Activity {
 	private boolean onFailDone = false;
 	private ArrayList<String> selectedCountryNames = new ArrayList<String>();
 	private List<String[]> selectedIndicatorCodes;
+	private Metric selectedMetric;
 	private int graphType = 1;
 	private HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>> dataset = new HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>>();
 
@@ -44,7 +46,7 @@ public class DataDisplay extends Activity {
 		Bundle extras = getIntent().getExtras();
 		ArrayList<Country> selectedCountries = extras.getParcelableArrayList("countries");
 		int selectedMetricPosition = extras.getInt("metric_position");
-		Metric selectedMetric = MetricList.getMetrics().get(selectedMetricPosition);
+		selectedMetric = MetricList.getMetrics().get(selectedMetricPosition);
 		graphType = selectedMetric.getGraphType();
 		String[] selectedCountryCodes = new String[selectedCountries.size()];
 		for (int i = 0; i < selectedCountries.size(); i++) {
@@ -304,7 +306,9 @@ public class DataDisplay extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				switch (which) {
-
+					case 0:
+						Utils.createInfoDialog(DataDisplay.this, selectedMetric.getName(), selectedMetric.getInfo());
+						break;
 				}
 				dialog.dismiss();
 			}
