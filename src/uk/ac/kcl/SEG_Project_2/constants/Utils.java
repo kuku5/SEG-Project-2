@@ -2,7 +2,15 @@ package uk.ac.kcl.SEG_Project_2.constants;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.Button;
+import android.widget.NumberPicker;
+import android.widget.Toast;
+import uk.ac.kcl.SEG_Project_2.R;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -29,6 +37,84 @@ public class Utils {
 		builder.setTitle(title)
 				.setMessage(info)
 				.setPositiveButton("Ok", null);
-		builder.create().show();
+		AlertDialog alert = builder.create();
+		alert.setCanceledOnTouchOutside(true);
+		alert.show();
+	}
+
+	public static void createDatePickerDialog(final Activity activity, final OnDatePickerDone onDone) {
+		// get default start and end years
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+		int from = prefs.getInt("latest_from_year", C.MIN_YEAR);
+		int to = prefs.getInt("latest_to_year", C.MAX_YEAR);
+		createDatePickerDialog(activity, onDone, from, to);
+	}
+
+	public static void createDatePickerDialog(final Activity activity, final OnDatePickerDone onDone, int fromYear, int toYear) {
+		final Dialog selectDates = new Dialog(activity);
+		selectDates.setTitle(R.string.date_picker_title);
+		selectDates.setContentView(R.layout.date_picker_dialog);
+
+		final NumberPicker npFrom = (NumberPicker) selectDates.findViewById(R.id.date_picker_from);
+		npFrom.setMaxValue(C.MAX_YEAR);
+		npFrom.setMinValue(C.MIN_YEAR);
+		npFrom.setValue(fromYear);
+		npFrom.setWrapSelectorWheel(false);
+
+		final NumberPicker npTo = (NumberPicker) selectDates.findViewById(R.id.date_picker_to);
+		npTo.setMaxValue(C.MAX_YEAR);
+		npTo.setMinValue(C.MIN_YEAR);
+		npTo.setValue(toYear);
+		npTo.setWrapSelectorWheel(false);
+
+		Button btSet = (Button) selectDates.findViewById(R.id.date_picker_okay);
+		btSet.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// check dates
+				int from = npFrom.getValue();
+				int to = npTo.getValue();
+				if (from > to) {
+					Toast.makeText(activity.getBaseContext(), R.string.date_picker_invalid, Toast.LENGTH_SHORT).show();
+					return;
+				}
+
+				// save most recent dates
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+				SharedPreferences.Editor editor = prefs.edit();
+				editor.putInt("latest_from_year", from);
+				editor.putInt("latest_to_year", to);
+				editor.apply();
+
+				// done
+				onDone.onDone(false, from, to);
+				selectDates.cancel();
+			}
+		});
+
+		final Button btCancel = (Button) selectDates.findViewById(R.id.date_picker_cancel);
+		btCancel.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int from = npFrom.getValue();
+				int to = npTo.getValue();
+				onDone.onDone(true, from, to);
+				selectDates.cancel();
+			}
+		});
+
+		selectDates.setOnCancelListener(new DialogInterface.OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				onDone.onDone(true, npFrom.getValue(), npTo.getValue());
+			}
+		});
+
+		selectDates.show();
+	}
+
+	public interface OnDatePickerDone {
+
+		public void onDone(boolean cancelled, int fromYear, int toYear);
 	}
 }

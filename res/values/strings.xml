@@ -2,10 +2,20 @@
 <resources>
 
 	<!-- DATA -->
+	<string name="date_picker_title">Select time period:</string>
+	<string name="date_picker_between_dates">to</string>
+	<string name="date_picker_invalid">Invalid time period!</string>
 	<string name="loading_data">Loading data,\nPlease wait</string>
 	<string name="data_error_title">Error!</string>
 	<string name="data_error_body">An error occurred whilst loading data. Please try again.</string>
-	<string name="data_options">Options…</string>
+	<string name="data_options_button">Info &amp; Options</string>
+	<string name="data_options_button_with_fa">&#xf05a; Info &amp; Options</string>
+	<string-array name="data_options">
+		<item>Info on this Metric</item>
+		<item>Edit Date Range</item>
+	</string-array>
+	<string name="data_legend_show">&#xf06e;</string>
+	<string name="data_legend_hide">&#xf070;</string>
 
 	<!-- COUNTRIES -->
     <string name="select_a_country">Select a Country</string>
@@ -18,16 +28,18 @@
 	<string name="select_a_metric">Select a Metric</string>
 	<string name="metric_long_press_hint">Hint: press and hold a metric for more information</string>
 
-	<!-- SPLASH -->
-	<string name="splash_num_1">1</string>
-	<string name="splash_num_2">2</string>
-	<string name="splash_num_3">3</string>
-	<string name="splash_item_1">Select countries</string>
-	<string name="splash_item_2">Select a metric</string>
-	<string name="splash_item_3">See your data</string>
-	<string name="splash_continue">Continue…</string>
+	<!-- WELCOME -->
+	<string name="welcome_num_1">1</string>
+	<string name="welcome_num_2">2</string>
+	<string name="welcome_num_3">3</string>
+	<string name="welcome_item_1">Select countries</string>
+	<string name="welcome_item_2">Select a metric</string>
+	<string name="welcome_item_3">See your data</string>
+	<string name="welcome_continue">Continue…</string>
 
 	<!-- GENERAL -->
     <string name="app_name">TFA Data (Geography Edition)</string>
+	<string name="okay">Okay</string>
+	<string name="cancel">Cancel</string>
 
 </resources>

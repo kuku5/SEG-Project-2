@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -140,7 +139,7 @@ public class SelectCountry extends Activity {
 			@Override
 			public void onFail() {
 				Toast.makeText(apiRequest.getContext(), "Failed to get country list", Toast.LENGTH_LONG).show();
-				startActivity(new Intent(getBaseContext(), Splash.class));
+				startActivity(new Intent(getBaseContext(), Welcome.class));
 				finish();
 			}
 		});

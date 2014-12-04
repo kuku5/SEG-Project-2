@@ -29,7 +29,7 @@
 			android:name=".activities.NetworkTest"
 			android:theme="@style/app_theme"/>
 		<activity
-			android:name=".activities.Splash"
+			android:name=".activities.Welcome"
 			android:theme="@style/app_theme">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>

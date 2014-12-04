@@ -5,10 +5,10 @@ public class Metric {
 	private String name;
 	private String info;
 	private int iconId;
-	private String[] indicators;
+	private String[][] indicators;
 	private int graphType;
 
-	public Metric(String name, String info, int iconId, String[] indicators, int graphType) {
+	public Metric(String name, String info, int iconId, String[][] indicators, int graphType) {
 		this.name = name;
 		this.info = info;
 		this.iconId = iconId;
@@ -28,7 +28,7 @@ public class Metric {
 		return iconId;
 	}
 
-	public String[] getIndicators() {
+	public String[][] getIndicators() {
 		return indicators;
 	}
 
