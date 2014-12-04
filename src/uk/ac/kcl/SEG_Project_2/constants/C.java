@@ -22,18 +22,19 @@ public class C {
 	/* GRAPHING */
 	public static final String LEGEND_DELIM = " - ";
 	public static final int[] GRAPH_COLOURS = new int[]{
+			0x998b0000,
 			0x99ff0000,
+			0x99ff8c00,
+			0x99ffa500,
 			0x99ffff00,
 			0x9900ff00,
-			0x9900ffff,
+			0x99008000,
+			0x99000080,
 			0x990000ff,
-			0x99ff00ff,
-			0x99aa0000,
-			0x99aaaa00,
-			0x9900aa00,
-			0x9900aaaa,
-			0x990000aa,
-			0x99aa00aa
+			0x99800080,
+			0x99ff1493,
+			0x99a52a2a,
+			0x995c4033
 	};
 
 }

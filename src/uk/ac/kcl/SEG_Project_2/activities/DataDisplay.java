@@ -180,8 +180,8 @@ public class DataDisplay extends Activity {
 		xValues.addAll(xValuesRaw);
 		Collections.sort(xValues);
 
-		// start building datasets
-		HashMap<String, ArrayList<Object>> datasets = new HashMap<String, ArrayList<Object>>();
+		// start building datasets (uses a treemap for inbuilt sorting)
+		Map<String, ArrayList<Object>> datasets = new TreeMap<String, ArrayList<Object>>();
 
 		// loop countries
 		for (String c : selectedCountryNames) {
