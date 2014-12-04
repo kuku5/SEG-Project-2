@@ -3,9 +3,11 @@ package uk.ac.kcl.SEG_Project_2.constants;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 import uk.ac.kcl.SEG_Project_2.R;
 
 import java.security.MessageDigest;
@@ -38,7 +40,7 @@ public class Utils {
 		alert.show();
 	}
 
-	public static void createDatePickerDialog(Activity activity, int fromYear, int toYear, final OnDatePickerDone onDone) {
+	public static void createDatePickerDialog(final Activity activity, int fromYear, int toYear, final OnDatePickerDone onDone) {
 		final Dialog selectDates = new Dialog(activity);
 		selectDates.setTitle(R.string.date_picker_title);
 		selectDates.setContentView(R.layout.date_picker_dialog);
@@ -59,12 +61,18 @@ public class Utils {
 		btSet.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				onDone.onDone(false, npFrom.getValue(), npTo.getValue());
+				int from = npFrom.getValue();
+				int to = npTo.getValue();
+				if (from > to) {
+					Toast.makeText(activity.getBaseContext(), R.string.date_picker_invalid, Toast.LENGTH_SHORT).show();
+					return;
+				}
+				onDone.onDone(false, from, to);
 				selectDates.cancel();
 			}
 		});
 
-		Button btCancel = (Button) selectDates.findViewById(R.id.date_picker_cancel);
+		final Button btCancel = (Button) selectDates.findViewById(R.id.date_picker_cancel);
 		btCancel.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -73,10 +81,18 @@ public class Utils {
 			}
 		});
 
+		selectDates.setOnCancelListener(new DialogInterface.OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				onDone.onDone(true, npFrom.getValue(), npTo.getValue());
+			}
+		});
+
 		selectDates.show();
 	}
 
 	public interface OnDatePickerDone {
+
 		public void onDone(boolean cancelled, int fromYear, int toYear);
 	}
 }

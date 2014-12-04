@@ -23,7 +23,7 @@
 			android:layout_height="wrap_content"
 			android:layout_margin="10dp"
 			android:textSize="20sp"
-			android:text="@string/date_select_between_dates"/>
+			android:text="@string/date_picker_between_dates"/>
 
 		<NumberPicker
 			android:id="@+id/date_picker_to"
