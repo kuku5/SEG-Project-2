@@ -33,6 +33,8 @@ public class DataDisplay extends Activity {
 
 	// views
 	private GridLayout legendDisplay;
+	private View chart;
+	private ArrayList<Boolean> legendVisibility = new ArrayList<Boolean>();
 
 	// collected data
 	private int indicatorsToCollect = 0;
@@ -41,6 +43,8 @@ public class DataDisplay extends Activity {
 	private boolean failed = false;
 	private boolean onFailDone = false;
 	private HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>> dataset = new HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>>();
+	ArrayList<Object> individualDatasets;
+	private ArrayList<String> xValues;
 
 	// data to collect
 	private int fromYear;
@@ -176,11 +180,11 @@ public class DataDisplay extends Activity {
 		}
 
 		// sort xValues
-		ArrayList<String> xValues = new ArrayList<String>(xValuesRaw.size());
+		xValues = new ArrayList<String>(xValuesRaw.size());
 		xValues.addAll(xValuesRaw);
 		Collections.sort(xValues);
 
-		// start building datasets (uses a treemap for inbuilt sorting)
+		// start building individualDatasets (uses a treemap for inbuilt sorting)
 		Map<String, ArrayList<Object>> datasets = new TreeMap<String, ArrayList<Object>>();
 
 		// loop countries
@@ -217,7 +221,6 @@ public class DataDisplay extends Activity {
 
 		// turn on the right type of graph
 		switchToDataView();
-		View chart;
 		switch (graphType) {
 			case MetricList.BAR_CHART:
 				chart = findViewById(R.id.data_bar_chart);
@@ -235,14 +238,15 @@ public class DataDisplay extends Activity {
 		// for legends
 		ArrayList<Pair<String, Integer>> legends = new ArrayList<Pair<String, Integer>>();
 
-		// create data sets for the graph
-		ArrayList<Object> sets = new ArrayList<Object>();
+		// create data individualDatasets for the graph
+		individualDatasets = new ArrayList<Object>();
 		for (Map.Entry<String, ArrayList<Object>> e : datasets.entrySet()) {
 			// pick a colour
 			int c = C.GRAPH_COLOURS[colour % colours];
 
 			// create legend
 			legends.add(new Pair<String, Integer>(e.getKey(), c));
+			legendVisibility.add(true);
 
 			// force data set into correct type for graph
 			Object individualSet;
@@ -256,7 +260,7 @@ public class DataDisplay extends Activity {
 					// format the bars
 					((BarDataSet) individualSet).setColor(c);
 					((BarDataSet) individualSet).setBarShadowColor(Color.TRANSPARENT);
-					sets.add(individualSet);
+					individualDatasets.add(individualSet);
 					break;
 				default:
 					// create line entries
@@ -268,7 +272,7 @@ public class DataDisplay extends Activity {
 					((LineDataSet) individualSet).setColor(c);
 					((LineDataSet) individualSet).setDrawCircles(false);
 					((LineDataSet) individualSet).setLineWidth(2);
-					sets.add(individualSet);
+					individualDatasets.add(individualSet);
 					break;
 			}
 
@@ -277,21 +281,7 @@ public class DataDisplay extends Activity {
 		}
 
 		// final setup on the graph
-		switch (graphType) {
-
-			case MetricList.BAR_CHART:
-				ArrayList<BarDataSet> barDataSets = new ArrayList<BarDataSet>();
-				for (Object o : sets) barDataSets.add((BarDataSet) o);
-				BarData barData = new BarData(xValues, barDataSets);
-				((BarChart) chart).setData(barData);
-				break;
-			default:
-				ArrayList<LineDataSet> lineDataSets = new ArrayList<LineDataSet>();
-				for (Object o : sets) lineDataSets.add((LineDataSet) o);
-				LineData lineData = new LineData(xValues, lineDataSets);
-				((LineChart) chart).setData(lineData);
-				break;
-		}
+		updateChartData();
 
 		// generic options
 		((Chart) chart).setDrawYValues(false);
@@ -299,26 +289,33 @@ public class DataDisplay extends Activity {
 		((Chart) chart).setDrawLegend(false);
 
 		// create our own legend display
-		Collections.sort(legends, new Comparator<Pair<String, Integer>>() {
-			@Override
-			public int compare(Pair<String, Integer> lhs, Pair<String, Integer> rhs) {
-				return lhs.first.compareTo(rhs.first);
-			}
-		});
 		if (legendDisplay != null) {
 			legendDisplay.removeAllViews();
-			for (Pair<String, Integer> l : legends) {
+			for (int legendNo = 0; legendNo < legends.size(); ++legendNo) {
+				Pair<String, Integer> l = legends.get(legendNo);
 				// add colour box
 				TextView boxToAdd = new TextView(getBaseContext());
 				boxToAdd.setText("■ ");
 				boxToAdd.setTextColor(l.second);
+				boxToAdd.setTypeface(null, Typeface.BOLD);
+				boxToAdd.setTag(true); // tag: visible?
 				legendDisplay.addView(boxToAdd);
 
 				// add text view
 				TextView tvToAdd = new TextView(getBaseContext());
 				tvToAdd.setText(" " + l.first);
 				tvToAdd.setTextColor(Color.BLACK);
+				tvToAdd.setTag(legendNo); // tag: legend number
 				legendDisplay.addView(tvToAdd);
+
+				// click actions
+				tvToAdd.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						int position = (Integer) v.getTag();
+						onLegendClicked(position);
+					}
+				});
 			}
 			legendDisplay.setVisibility(View.VISIBLE);
 		}
@@ -400,6 +397,65 @@ public class DataDisplay extends Activity {
 		AlertDialog dialog = builder.create();
 		dialog.setCanceledOnTouchOutside(true);
 		dialog.show();
+	}
+
+	private void onLegendClicked(int position) {
+		if (legendDisplay == null) return;
+
+		// get text view parts
+		TextView part1 = (TextView) legendDisplay.getChildAt(position * 2);
+		TextView part2 = (TextView) legendDisplay.getChildAt(position * 2 + 1);
+
+		// visible at the moment?
+		Boolean visible = (Boolean) part1.getTag();
+
+		if (visible) {
+			// hide
+			part1.setAlpha(0.3f);
+			part2.setAlpha(0.3f);
+			legendVisibility.remove(position);
+			legendVisibility.add(position, false);
+		} else {
+			// show
+			part1.setAlpha(1.0f);
+			part2.setAlpha(1.0f);
+			legendVisibility.remove(position);
+			legendVisibility.add(position, true);
+		}
+
+		// update statue
+		part1.setTag(!visible);
+
+		// update graph
+		updateChartData();
+	}
+
+	private void updateChartData() {
+		switch (graphType) {
+
+			case MetricList.BAR_CHART:
+				ArrayList<BarDataSet> barDataSets = new ArrayList<BarDataSet>();
+				for (int i = 0; i < individualDatasets.size(); ++i) {
+					if (legendVisibility.get(i)) {
+						barDataSets.add((BarDataSet) individualDatasets.get(i));
+					}
+				}
+				BarData barData = new BarData(xValues, barDataSets);
+				((BarChart) chart).setData(barData);
+				break;
+			default:
+				ArrayList<LineDataSet> lineDataSets = new ArrayList<LineDataSet>();
+				for (int i = 0; i < individualDatasets.size(); ++i) {
+					if (legendVisibility.get(i)) {
+						lineDataSets.add((LineDataSet) individualDatasets.get(i));
+					}
+				}
+				LineData lineData = new LineData(xValues, lineDataSets);
+				((LineChart) chart).setData(lineData);
+				break;
+		}
+
+		chart.invalidate();
 	}
 
 }
