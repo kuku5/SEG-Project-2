@@ -17,11 +17,11 @@ public class MetricList {
 				"Gas Emissions",
 				"This metric will display the greenhouse gas emissions for each country, grouped into CO2, methane, nitrous oxides and others.",
 				R.drawable.gases,
-				new String[]{
-						"EN.ATM.CO2E.KT",
-						"EN.ATM.METH.KT.CE",
-						"EN.ATM.NOXE.KT.CE",
-						"EN.ATM.GHGO.KT.CE"
+				new String[][]{
+						new String[]{"EN.ATM.CO2E.KT", "CO2, kT"},
+						new String[]{"EN.ATM.METH.KT.CE", "Methane, kT"},
+						new String[]{"EN.ATM.NOXE.KT.CE", "N-Oxides, kT"},
+						new String[]{"EN.ATM.GHGO.KT.CE", "Other, kT"}
 				},
 				LINE_GRAPH
 		));
@@ -29,25 +29,25 @@ public class MetricList {
 				"Population",
 				"This metric will display the population sizes for each country selected.",
 				R.drawable.population,
-				new String[]{
-						"SP.POP.TOTL"
+				new String[][]{
+						new String[]{"SP.POP.TOTL", "Population"}
 				},
 				BAR_CHART
 		));
 		metrics.add(2, new Metric(
-				"Deforestation",
+				"Forestation",
 				"This metric will display the sum of forested areas that each country has.",
 				R.drawable.tree,
-				new String[]{
-						"AG.LND.FRST.K2"
+				new String[][]{
+						new String[]{"AG.LND.FRST.K2", "Forest Area, KM sq."}
 				},
 				LINE_GRAPH
 		));
 		metrics.add(3, new Metric(
 				"Elec. Use", "This metric will display the electrical consumption of each country selected.",
 				R.drawable.electricity,
-				new String[]{
-						"EG.USE.ELEC.KH.PC"
+				new String[][]{
+						new String[]{"EG.USE.ELEC.KH.PC", "Elec. Use, kW"}
 				},
 				LINE_GRAPH
 		));

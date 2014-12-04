@@ -30,7 +30,7 @@ public class DataDisplay extends Activity {
 	private boolean failed = false;
 	private boolean onFailDone = false;
 	private ArrayList<String> selectedCountryNames = new ArrayList<String>();
-	private List<String> selectedIndicatorCodes;
+	private List<String[]> selectedIndicatorCodes;
 	private int graphType = 1;
 	private HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>> dataset = new HashMap<String, HashMap<String, ArrayList<Pair<String, String>>>>();
 
@@ -57,12 +57,12 @@ public class DataDisplay extends Activity {
 		selectedIndicatorCodes = Arrays.asList(selectedMetric.getIndicators());
 		indicatorsToCollect = selectedIndicatorCodes.size();
 		indicatorData = new ArrayList<ArrayList<JSONObject>>();
-		for (String i : selectedIndicatorCodes) {
+		for (String[] i : selectedIndicatorCodes) {
 			// build a request
 			final WorldBankApiRequest request = new WorldBankApiRequest(DataDisplay.this);
 			request.setDateRange(startYear, endYear);
 			request.setCountries(selectedCountryCodes);
-			request.setIndicator(i);
+			request.setIndicator(i[0]);
 			request.setOnFail(new ApiRequest.OnFailListener() {
 				@Override
 				public void onFail() {
@@ -146,9 +146,9 @@ public class DataDisplay extends Activity {
 		// loop countries
 		for (String c : selectedCountryNames) {
 			// loop indicators
-			for (String i : selectedIndicatorCodes) {
+			for (String[] i : selectedIndicatorCodes) {
 				// sort values
-				ArrayList<Pair<String, String>> values = dataset.get(c).get(i);
+				ArrayList<Pair<String, String>> values = dataset.get(c).get(i[0]);
 				Collections.sort(values, new Comparator<Pair<String, String>>() {
 					@Override
 					public int compare(Pair<String, String> lhs, Pair<String, String> rhs) {
@@ -174,25 +174,25 @@ public class DataDisplay extends Activity {
 		// loop countries
 		for (String c : selectedCountryNames) {
 			// loop indicators
-			for (String i : selectedIndicatorCodes) {
+			for (String[] i : selectedIndicatorCodes) {
 				// create an array to store
-				datasets.put(c + "##" + i, new ArrayList<Object>());
+				datasets.put(c + ", " + i[1], new ArrayList<Object>());
 
 				// loop xValues, and insert values where they exist
 				for (int x = 0; x < xValues.size(); x++) {
 					String xVal = xValues.get(x);
 					// loop values
-					ArrayList<Pair<String, String>> values = dataset.get(c).get(i);
+					ArrayList<Pair<String, String>> values = dataset.get(c).get(i[0]);
 					for (Pair<String, String> r : values) {
 						if (r.first.equals(xVal)) {
 							try {
 								// insert into dataset
 								switch (graphType) {
 									case MetricList.BAR_CHART:
-										datasets.get(c + "##" + i).add(new BarEntry(Float.parseFloat(r.second), x));
+										datasets.get(c + ", " + i[1]).add(new BarEntry(Float.parseFloat(r.second), x));
 										break;
 									default:
-										datasets.get(c + "##" + i).add(new Entry(Float.parseFloat(r.second), x));
+										datasets.get(c + ", " + i[1]).add(new Entry(Float.parseFloat(r.second), x));
 										break;
 								}
 							} catch (NumberFormatException e) {
