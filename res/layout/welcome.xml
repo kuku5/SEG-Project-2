@@ -11,8 +11,7 @@
 		android:layout_height="wrap_content"
 		android:text="Logo Placeholder"
 		android:layout_gravity="center"
-		android:gravity="center"
-		android:layout_marginTop="10dp"/>
+		android:gravity="center"/>
 
 	<GridLayout
 		android:layout_width="wrap_content"
@@ -24,7 +23,7 @@
 		android:layout_marginBottom="10dp">
 
 		<Button
-			android:background="@drawable/circle"
+			android:background="@drawable/welcome_circle"
 			android:layout_width="50dp"
 			android:layout_height="50dp"
 			android:text="@string/welcome_num_1"
@@ -47,7 +46,7 @@
 			android:textStyle="italic"/>
 
 		<Button
-			android:background="@drawable/circle"
+			android:background="@drawable/welcome_circle"
 			android:layout_width="50dp"
 			android:layout_height="50dp"
 			android:text="@string/welcome_num_2"
@@ -69,7 +68,7 @@
 			android:textStyle="italic"/>
 
 		<Button
-			android:background="@drawable/circle"
+			android:background="@drawable/welcome_circle"
 			android:layout_width="50dp"
 			android:layout_height="50dp"
 			android:text="@string/welcome_num_3"
@@ -99,7 +98,8 @@
 		android:text="@string/welcome_continue"
 		android:layout_gravity="center"
 		android:gravity="center"
-		android:padding="10dp"
+		android:paddingLeft="30dp"
+		android:paddingRight="30dp"
 		android:background="@drawable/green_button_background"
 		android:textColor="#ffffffff"
 		android:textStyle="bold"/>
