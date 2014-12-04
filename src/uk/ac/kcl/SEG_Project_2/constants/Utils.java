@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
@@ -76,7 +77,9 @@ public class Utils {
 		btCancel.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				onDone.onDone(true, npFrom.getValue(), npTo.getValue());
+				int from = npFrom.getValue();
+				int to = npTo.getValue();
+				onDone.onDone(true, from, to);
 				selectDates.cancel();
 			}
 		});
