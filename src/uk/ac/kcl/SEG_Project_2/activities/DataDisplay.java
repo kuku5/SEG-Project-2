@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Pair;
 import android.view.View;
-import android.widget.Button;
+import android.widget.*;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.*;
 import org.json.JSONException;
@@ -25,6 +28,9 @@ import uk.ac.kcl.SEG_Project_2.data.WorldBankApiRequest;
 import java.util.*;
 
 public class DataDisplay extends Activity {
+
+	// views
+	private GridLayout legendDisplay;
 
 	// data collection fields
 	private int indicatorsToCollect = 0;
@@ -219,10 +225,10 @@ public class DataDisplay extends Activity {
 		View chart;
 		switch (graphType) {
 			case MetricList.BAR_CHART:
-				chart = findViewById(R.id.barChart);
+				chart = findViewById(R.id.data_bar_chart);
 				break;
 			default:
-				chart = findViewById(R.id.lineChart);
+				chart = findViewById(R.id.data_line_chart);
 				break;
 		}
 		chart.setVisibility(View.VISIBLE);
@@ -231,9 +237,19 @@ public class DataDisplay extends Activity {
 		int colour = 0;
 		int colours = C.GRAPH_COLOURS.length;
 
+		// for legends
+		ArrayList<Pair<String, Integer>> legends = new ArrayList<Pair<String, Integer>>();
+
 		// create data sets
 		ArrayList<Object> sets = new ArrayList<Object>();
 		for (Map.Entry<String, ArrayList<Object>> e : datasets.entrySet()) {
+			// pick a colour
+			int c = C.GRAPH_COLOURS[colour % colours];
+
+			// create legend
+			legends.add(new Pair<String, Integer>(e.getKey(), c));
+
+			// force data set into correct type for graph
 			Object individualSet;
 			switch (graphType) {
 				case MetricList.BAR_CHART:
@@ -244,7 +260,7 @@ public class DataDisplay extends Activity {
 					individualSet = new BarDataSet(barEntries, e.getKey());
 
 					// format the bars
-					((BarDataSet) individualSet).setColor(C.GRAPH_COLOURS[colour % colours]);
+					((BarDataSet) individualSet).setColor(c);
 					sets.add(individualSet);
 					break;
 				default:
@@ -255,7 +271,7 @@ public class DataDisplay extends Activity {
 					individualSet = new LineDataSet(lineEntries, e.getKey());
 
 					// format the lines
-					((LineDataSet) individualSet).setColor(C.GRAPH_COLOURS[colour % colours]);
+					((LineDataSet) individualSet).setColor(c);
 					((LineDataSet) individualSet).setDrawCircles(false);
 					((LineDataSet) individualSet).setLineWidth(2);
 					sets.add(individualSet);
@@ -286,6 +302,32 @@ public class DataDisplay extends Activity {
 				((LineChart) chart).setData(lineData);
 				break;
 		}
+
+		// create our own legend display
+		((Chart) chart).setDrawLegend(false);
+		Collections.sort(legends, new Comparator<Pair<String, Integer>>() {
+			@Override
+			public int compare(Pair<String, Integer> lhs, Pair<String, Integer> rhs) {
+				return lhs.first.compareTo(rhs.first);
+			}
+		});
+		if (legendDisplay != null) {
+			legendDisplay.removeAllViews();
+			for (Pair<String, Integer> l : legends) {
+				// add colour box
+				TextView boxToAdd = new TextView(getBaseContext());
+				boxToAdd.setText("■ ");
+				boxToAdd.setTextColor(l.second);
+				legendDisplay.addView(boxToAdd);
+
+				// add text view
+				TextView tvToAdd = new TextView(getBaseContext());
+				tvToAdd.setText(" " + l.first);
+				tvToAdd.setTextColor(Color.BLACK);
+				legendDisplay.addView(tvToAdd);
+			}
+			legendDisplay.setVisibility(View.VISIBLE);
+		}
 	}
 
 	private void setDataView() {
@@ -302,6 +344,9 @@ public class DataDisplay extends Activity {
 				}
 			});
 		}
+
+		// get legends display
+		legendDisplay = (GridLayout) findViewById(R.id.data_legends);
 	}
 
 	private void onOptionsButtonClick() {

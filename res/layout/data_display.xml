@@ -4,7 +4,7 @@
 	android:layout_height="match_parent">
 
 	<com.github.mikephil.charting.charts.LineChart
-		android:id="@+id/lineChart"
+		android:id="@+id/data_line_chart"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
 		android:layout_above="@+id/data_options_button"
@@ -12,7 +12,7 @@
 		android:visibility="gone"/>
 
 	<com.github.mikephil.charting.charts.BarChart
-		android:id="@+id/barChart"
+		android:id="@+id/data_bar_chart"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
 		android:layout_above="@+id/data_options_button"
@@ -29,5 +29,15 @@
 		android:textColor="#ffffffff"
 		android:background="@drawable/green_button_background"
 		android:text="@string/data_options_button"/>
+
+	<GridLayout
+		android:id="@+id/data_legends"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:columnCount="2"
+		android:background="#aaffffff"
+		android:layout_alignParentRight="true"
+		android:layout_above="@id/data_options_button"
+		android:padding="8dp"/>
 
 </RelativeLayout>
