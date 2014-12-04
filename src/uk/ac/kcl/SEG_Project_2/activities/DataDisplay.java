@@ -69,6 +69,9 @@ public class DataDisplay extends Activity {
 		fromYear = extras.getInt("startYear");
 		toYear = extras.getInt("endYear");
 
+		// set title
+		setTitle(selectedMetric.getName());
+
 		// build request(s)
 		selectedIndicatorCodes = Arrays.asList(selectedMetric.getIndicators());
 		indicatorsToCollect = selectedIndicatorCodes.size();
