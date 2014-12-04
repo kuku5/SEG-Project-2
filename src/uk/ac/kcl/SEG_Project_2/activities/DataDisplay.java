@@ -5,11 +5,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Pair;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.TextView;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -334,9 +336,13 @@ public class DataDisplay extends Activity {
 		// switch to data display
 		setContentView(R.layout.data_display);
 
+		// create Font Awesome typeface
+		Typeface fontAwesome = Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/Fontawesome-Webfont.ttf");
+
 		// get options button
 		Button optionsButton = (Button) findViewById(R.id.data_options_button);
 		if (optionsButton != null) {
+			optionsButton.setTypeface(fontAwesome);
 			optionsButton.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -347,6 +353,26 @@ public class DataDisplay extends Activity {
 
 		// get legends display
 		legendDisplay = (GridLayout) findViewById(R.id.data_legends);
+
+		// get legend button
+		final Button legendButton = (Button) findViewById(R.id.data_legend_button);
+		if (legendButton != null) {
+			legendButton.setTypeface(fontAwesome);
+			legendButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (legendDisplay != null) {
+						if (legendDisplay.getVisibility() == View.VISIBLE) {
+							legendButton.setText(R.string.data_legend_show);
+							legendDisplay.setVisibility(View.GONE);
+						} else {
+							legendDisplay.setVisibility(View.VISIBLE);
+							legendButton.setText(R.string.data_legend_hide);
+						}
+					}
+				}
+			});
+		}
 	}
 
 	private void onOptionsButtonClick() {

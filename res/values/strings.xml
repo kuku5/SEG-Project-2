@@ -9,10 +9,13 @@
 	<string name="data_error_title">Error!</string>
 	<string name="data_error_body">An error occurred whilst loading data. Please try again.</string>
 	<string name="data_options_button">Info &amp; Options</string>
+	<string name="data_options_button_with_fa">&#xf05a; Info &amp; Options</string>
 	<string-array name="data_options">
 		<item>Info on this Metric</item>
 		<item>Edit Date Range</item>
 	</string-array>
+	<string name="data_legend_show">&#xf06e;</string>
+	<string name="data_legend_hide">&#xf070;</string>
 
 	<!-- COUNTRIES -->
     <string name="select_a_country">Select a Country</string>

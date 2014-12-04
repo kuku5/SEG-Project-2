@@ -7,7 +7,7 @@
 		android:id="@+id/data_line_chart"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
-		android:layout_above="@+id/data_options_button"
+		android:layout_above="@+id/data_button_bar"
 		android:layout_alignParentTop="true"
 		android:visibility="gone"/>
 
@@ -15,29 +15,49 @@
 		android:id="@+id/data_bar_chart"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
-		android:layout_above="@+id/data_options_button"
+		android:layout_above="@id/data_button_bar"
 		android:layout_alignParentTop="true"
 		android:visibility="gone"/>
 
-	<Button
-		android:id="@id/data_options_button"
+	<RelativeLayout
+		android:id="@id/data_button_bar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:layout_margin="5dp"
-		android:textStyle="bold"
-		android:textColor="#ffffffff"
-		android:background="@drawable/green_button_background"
-		android:text="@string/data_options_button"/>
+		android:layout_alignParentBottom="true">
+
+		<Button
+			android:id="@+id/data_options_button"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_toLeftOf="@+id/data_legend_button"
+			android:layout_margin="5dp"
+			android:textStyle="bold"
+			android:textColor="#ffffffff"
+			android:background="@drawable/green_button_selector"
+			android:text="@string/data_options_button_with_fa"/>
+
+		<Button
+			android:id="@id/data_legend_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+			android:layout_margin="5dp"
+			android:textStyle="bold"
+			android:textColor="#ffffffff"
+			android:background="@drawable/green_button_selector"
+			android:text="@string/data_legend_hide"/>
+
+	</RelativeLayout>
 
 	<GridLayout
 		android:id="@+id/data_legends"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:columnCount="2"
-		android:background="#aaffffff"
+		android:background="#ccffffff"
 		android:layout_alignParentRight="true"
-		android:layout_above="@id/data_options_button"
+		android:layout_above="@id/data_button_bar"
 		android:padding="8dp"/>
 
 </RelativeLayout>
