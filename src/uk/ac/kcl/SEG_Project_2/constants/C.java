@@ -15,4 +15,20 @@ public class C {
 	/* OPTIONS */
 	public static final int MAX_COUNTRIES = 4;
 
+	/* GRAPHING */
+	public static int[] GRAPH_COLOURS = new int[] {
+			0x99ff0000,
+			0x99ffff00,
+			0x9900ff00,
+			0x9900ffff,
+			0x990000ff,
+			0x99ff00ff,
+			0x99aa0000,
+			0x99aaaa00,
+			0x9900aa00,
+			0x9900aaaa,
+			0x990000aa,
+			0x99aa00aa
+	};
+
 }

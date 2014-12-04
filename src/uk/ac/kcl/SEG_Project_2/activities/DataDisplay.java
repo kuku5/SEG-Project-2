@@ -12,6 +12,7 @@ import com.github.mikephil.charting.data.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import uk.ac.kcl.SEG_Project_2.R;
+import uk.ac.kcl.SEG_Project_2.constants.C;
 import uk.ac.kcl.SEG_Project_2.constants.MetricList;
 import uk.ac.kcl.SEG_Project_2.data.ApiRequest;
 import uk.ac.kcl.SEG_Project_2.data.Country;
@@ -218,6 +219,10 @@ public class DataDisplay extends Activity {
 		}
 		chart.setVisibility(View.VISIBLE);
 
+		// for colouring
+		int colour = 0;
+		int colours = C.GRAPH_COLOURS.length;
+
 		// create data sets
 		ArrayList<Object> sets = new ArrayList<Object>();
 		for (Map.Entry<String, ArrayList<Object>> e : datasets.entrySet()) {
@@ -229,6 +234,9 @@ public class DataDisplay extends Activity {
 						barEntries.add((BarEntry) o);
 					}
 					individualSet = new BarDataSet(barEntries, e.getKey());
+
+					// format the bars
+					((BarDataSet) individualSet).setColor(C.GRAPH_COLOURS[colour % colours]);
 					sets.add(individualSet);
 					break;
 				default:
@@ -237,22 +245,35 @@ public class DataDisplay extends Activity {
 						lineEntries.add((Entry) o);
 					}
 					individualSet = new LineDataSet(lineEntries, e.getKey());
+
+					// format the lines
+					((LineDataSet) individualSet).setColor(C.GRAPH_COLOURS[colour % colours]);
+					((LineDataSet) individualSet).setDrawCircles(false);
+					((LineDataSet) individualSet).setLineWidth(2);
 					sets.add(individualSet);
 					break;
 			}
+
+			// next colour!
+			++colour;
 		}
 
+		// final setup on the graph
 		switch (graphType) {
 			case MetricList.BAR_CHART:
 				ArrayList<BarDataSet> barDataSets = new ArrayList<BarDataSet>();
 				for (Object o : sets) barDataSets.add((BarDataSet) o);
 				BarData barData = new BarData(xValues, barDataSets);
+				((BarChart) chart).setDrawYValues(false);
+				((BarChart) chart).setDescription("");
 				((BarChart) chart).setData(barData);
 				break;
 			default:
 				ArrayList<LineDataSet> lineDataSets = new ArrayList<LineDataSet>();
 				for (Object o : sets) lineDataSets.add((LineDataSet) o);
 				LineData lineData = new LineData(xValues, lineDataSets);
+				((LineChart) chart).setDrawYValues(false);
+				((LineChart) chart).setDescription("");
 				((LineChart) chart).setData(lineData);
 				break;
 		}
