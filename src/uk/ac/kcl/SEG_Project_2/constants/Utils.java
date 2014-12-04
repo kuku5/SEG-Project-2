@@ -29,6 +29,8 @@ public class Utils {
 		builder.setTitle(title)
 				.setMessage(info)
 				.setPositiveButton("Ok", null);
-		builder.create().show();
+		AlertDialog alert = builder.create();
+		alert.setCanceledOnTouchOutside(true);
+		alert.show();
 	}
 }

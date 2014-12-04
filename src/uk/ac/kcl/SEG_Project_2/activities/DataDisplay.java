@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Button;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.*;
@@ -136,7 +137,9 @@ public class DataDisplay extends Activity {
 						DataDisplay.this.finish();
 					}
 				});
-		builder.create().show();
+		AlertDialog alert = builder.create();
+		alert.setCanceledOnTouchOutside(true);
+		alert.show();
 	}
 
 	private void onDataCollectionFinished() {
@@ -204,10 +207,8 @@ public class DataDisplay extends Activity {
 			}
 		}
 
-		// switch to data display
-		setContentView(R.layout.data_display);
-
 		// turn on right type of graph
+		setDataView();
 		View chart;
 		switch (graphType) {
 			case MetricList.BAR_CHART:
@@ -260,6 +261,7 @@ public class DataDisplay extends Activity {
 
 		// final setup on the graph
 		switch (graphType) {
+
 			case MetricList.BAR_CHART:
 				ArrayList<BarDataSet> barDataSets = new ArrayList<BarDataSet>();
 				for (Object o : sets) barDataSets.add((BarDataSet) o);
@@ -277,6 +279,39 @@ public class DataDisplay extends Activity {
 				((LineChart) chart).setData(lineData);
 				break;
 		}
+	}
+
+	private void setDataView() {
+		// switch to data display
+		setContentView(R.layout.data_display);
+
+		// get options button
+		Button optionsButton = (Button) findViewById(R.id.data_options_button);
+		if (optionsButton != null) {
+			optionsButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					onOptionsButtonClick();
+				}
+			});
+		}
+	}
+
+	private void onOptionsButtonClick() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(DataDisplay.this);
+		builder.setTitle(R.string.data_options_button);
+		builder.setItems(getResources().getStringArray(R.array.data_options), new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+
+				}
+				dialog.dismiss();
+			}
+		});
+		AlertDialog dialog = builder.create();
+		dialog.setCanceledOnTouchOutside(true);
+		dialog.show();
 	}
 
 }
