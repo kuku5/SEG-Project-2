@@ -2,6 +2,8 @@
 <resources>
 
 	<!-- DATA -->
+	<string name="date_picker_title">Select time period:</string>
+	<string name="date_select_between_dates">to</string>
 	<string name="loading_data">Loading data,\nPlease wait</string>
 	<string name="data_error_title">Error!</string>
 	<string name="data_error_body">An error occurred whilst loading data. Please try again.</string>
@@ -33,5 +35,7 @@
 
 	<!-- GENERAL -->
     <string name="app_name">TFA Data (Geography Edition)</string>
+	<string name="okay">Okay</string>
+	<string name="cancel">Cancel</string>
 
 </resources>
