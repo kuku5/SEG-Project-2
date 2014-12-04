@@ -1,11 +1,13 @@
 package uk.ac.kcl.SEG_Project_2.constants;
 
+import java.util.Calendar;
+
 public class C {
 
 	/* NETWORKING */
 	public static final String API_URI_FORMAT = "http://api.worldbank.org/countries/%s/indicators/%s?format=json&frequency=%s&per_page=100%s&page=::PAGE::";
 	public static final int MIN_YEAR = 1900;
-	public static final int MAX_YEAR = 2014;// TODO: (new Date()).getYear();
+	public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR);
 
 	/* CACHE */
 	public static final int CACHE_EXPIRY = 6 * 60 * 60;
