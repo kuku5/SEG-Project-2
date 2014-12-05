@@ -6,18 +6,26 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 import uk.ac.kcl.SEG_Project_2.R;
+import uk.ac.kcl.SEG_Project_2.activities.DataDisplay;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Utils {
 
-	public static String createSHA256(String input) {
+    public static boolean lineChecked = false;
+    public static boolean barChecked = false;
+
+
+    public static String createSHA256(String input) {
 		StringBuilder output = new StringBuilder();
 		try {
 			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -47,10 +55,10 @@ public class Utils {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
 		int from = prefs.getInt("latest_from_year", C.MIN_YEAR);
 		int to = prefs.getInt("latest_to_year", C.MAX_YEAR);
-		createDatePickerDialog(activity, onDone, from, to);
+		createDatePickerDialog(activity, onDone, from, to, MetricList.LINE_GRAPH);
 	}
 
-	public static void createDatePickerDialog(final Activity activity, final OnDatePickerDone onDone, int fromYear, int toYear) {
+	public static void createDatePickerDialog(final Activity activity, final OnDatePickerDone onDone, int fromYear, int toYear, int graphType) {
 		final Dialog selectDates = new Dialog(activity);
 		selectDates.setTitle(R.string.date_picker_title);
 		selectDates.setContentView(R.layout.date_picker_dialog);
@@ -67,13 +75,27 @@ public class Utils {
 		npTo.setValue(toYear);
 		npTo.setWrapSelectorWheel(false);
 
-		Button btSet = (Button) selectDates.findViewById(R.id.date_picker_okay);
+        final RadioButton lineButton = (RadioButton) selectDates.findViewById(R.id.radio_linechart);
+        final RadioButton barButton = (RadioButton) selectDates.findViewById(R.id.radio_barchart);
+
+        if(graphType == MetricList.BAR_CHART){
+            lineButton.setChecked(false);
+            barButton.setChecked(true);
+        }
+        else{
+            barButton.setChecked(false);
+            lineButton.setChecked(true);
+        }
+
+        Button btSet = (Button) selectDates.findViewById(R.id.date_picker_okay);
 		btSet.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// check dates
 				int from = npFrom.getValue();
 				int to = npTo.getValue();
+                int graphType = lineButton.isChecked() ? MetricList.LINE_GRAPH : MetricList.BAR_CHART;
+
 				if (from > to) {
 					Toast.makeText(activity.getBaseContext(), R.string.date_picker_invalid, Toast.LENGTH_SHORT).show();
 					return;
@@ -87,7 +109,7 @@ public class Utils {
 				editor.apply();
 
 				// done
-				onDone.onDone(false, from, to);
+				onDone.onDone(false, from, to, graphType);
 				selectDates.cancel();
 			}
 		});
@@ -98,7 +120,10 @@ public class Utils {
 			public void onClick(View v) {
 				int from = npFrom.getValue();
 				int to = npTo.getValue();
-				onDone.onDone(true, from, to);
+                int graphType = lineButton.isChecked() ? MetricList.LINE_GRAPH : MetricList.BAR_CHART;
+
+
+                onDone.onDone(true, from, to, graphType);
 				selectDates.cancel();
 			}
 		});
@@ -106,8 +131,10 @@ public class Utils {
 		selectDates.setOnCancelListener(new DialogInterface.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface dialog) {
-				onDone.onDone(true, npFrom.getValue(), npTo.getValue());
-			}
+                int graphType = lineButton.isChecked() ? MetricList.LINE_GRAPH : MetricList.BAR_CHART;
+                onDone.onDone(true, npFrom.getValue(), npTo.getValue(), graphType);
+
+            }
 		});
 
 		selectDates.show();
@@ -115,6 +142,9 @@ public class Utils {
 
 	public interface OnDatePickerDone {
 
-		public void onDone(boolean cancelled, int fromYear, int toYear);
+		public void onDone(boolean cancelled, int fromYear, int toYear, int graphType);
 	}
+
+
+
 }

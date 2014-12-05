@@ -40,10 +40,12 @@ public class SelectMetric extends Activity {
 				SelectMetric.this,
 				new Utils.OnDatePickerDone() {
 					@Override
-					public void onDone(boolean cancelled, int fromYear, int toYear) {
+					public void onDone(boolean cancelled, int fromYear, int toYear, int graphType) {
 						if (!cancelled) {
 							sendToData.putExtra("startYear", fromYear);
 							sendToData.putExtra("endYear", toYear);
+                            sendToData.putExtra("graphType", graphType);
+
 							SelectMetric.this.startActivity(sendToData);
 						}
 					}

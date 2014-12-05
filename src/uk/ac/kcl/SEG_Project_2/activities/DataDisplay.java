@@ -54,7 +54,7 @@ public class DataDisplay extends Activity {
 	private List<String[]> selectedIndicatorCodes;
 	private int selectedMetricPosition;
 	private Metric selectedMetric;
-	private int graphType = 1;
+	private int graphType = MetricList.LINE_GRAPH;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +66,7 @@ public class DataDisplay extends Activity {
 		selectedCountries = extras.getParcelableArrayList("countries");
 		selectedMetricPosition = extras.getInt("metric_position");
 		selectedMetric = MetricList.getMetrics().get(selectedMetricPosition);
-		graphType = selectedMetric.getGraphType();
+		graphType = extras.getInt("graphType");
 		String[] selectedCountryCodes = new String[selectedCountries.size()];
 		for (int i = 0; i < selectedCountries.size(); i++) {
 			selectedCountryCodes[i] = selectedCountries.get(i).getId();
@@ -377,18 +377,20 @@ public class DataDisplay extends Activity {
 					case 1:
 						Utils.createDatePickerDialog(DataDisplay.this, new Utils.OnDatePickerDone() {
 							@Override
-							public void onDone(boolean cancelled, int fromYear, int toYear) {
+							public void onDone(boolean cancelled, int fromYear, int toYear, int graphType) {
 								if (!cancelled) {
 									final Intent sendToData = new Intent(getBaseContext(), DataDisplay.class);
 									sendToData.putParcelableArrayListExtra("countries", selectedCountries);
 									sendToData.putExtra("metric_position", selectedMetricPosition);
 									sendToData.putExtra("startYear", fromYear);
 									sendToData.putExtra("endYear", toYear);
-									DataDisplay.this.startActivity(sendToData);
+                                    sendToData.putExtra("graphType", graphType);
+
+                                    DataDisplay.this.startActivity(sendToData);
 									DataDisplay.this.finish();
 								}
 							}
-						}, fromYear, toYear);
+						}, fromYear, toYear, graphType);
 						break;
 				}
 				dialog.dismiss();
