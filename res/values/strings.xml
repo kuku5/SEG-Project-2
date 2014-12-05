@@ -2,7 +2,7 @@
 <resources>
 
 	<!-- DATA -->
-	<string name="date_picker_title">Select time period:</string>
+	<string name="date_picker_title">Select Date and Graph:</string>
 	<string name="date_picker_between_dates">to</string>
 	<string name="date_picker_invalid">Invalid time period!</string>
 	<string name="loading_data">Loading data,\nPlease wait</string>
@@ -12,7 +12,7 @@
 	<string name="data_options_button_with_fa">&#xf05a; Info &amp; Options</string>
 	<string-array name="data_options">
 		<item>Info on this Metric</item>
-		<item>Edit Date Range</item>
+		<item>Edit Date Range and Graph</item>
 	</string-array>
 	<string name="data_legend_show">&#xf06e;</string>
 	<string name="data_legend_hide">&#xf070;</string>
@@ -41,5 +41,10 @@
     <string name="app_name">TFA Data (Geography Edition)</string>
 	<string name="okay">Okay</string>
 	<string name="cancel">Cancel</string>
+
+    <!-- RADIO -->
+    <string name="Line_Chart_String">Line Chart</string>
+    <string name="Bar_Chart_String">Bar Chart</string>
+
 
 </resources>
