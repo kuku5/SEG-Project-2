@@ -51,6 +51,24 @@ public class MetricList {
 				},
 				LINE_GRAPH
 		));
+		metrics.add(4, new Metric(
+				"Birth/Death Rates", "This metric will display the crude birth and death rates for each country, expressed as the number of births/deaths per 1000 population.",
+				0,
+				new String[][]{
+						new String[]{"SP.DYN.CBRT.IN", "Births, per 1000 people"},
+						new String[]{"SP.DYN.CDRT.IN", "Deaths, per 1000 people"}
+				},
+				LINE_GRAPH
+		));
+		metrics.add(5, new Metric(
+				"Fuel Prices", "This metric will display the price of diesel and petrol (gasoline) for each country, in US$ per litre.",
+				0,
+				new String[][]{
+						new String[]{"EP.PMP.DESL.CD", "Diesel, US$/L"},
+						new String[]{"EP.PMP.SGAS.CD", "Petrol, US$/L"}
+				},
+				LINE_GRAPH
+		));
 	}
 
 	public static ArrayList<Metric> getMetrics() {
